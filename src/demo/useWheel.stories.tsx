@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { Button, MantineProvider } from '@mantine/core';
 import { useRef } from 'react';
 import { useWheel } from '../lib/useWheel';
 import { useInteractions } from '../lib/useInteractions';
+
+function Button() {
+  return <button>test</button>
+}
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -13,19 +15,30 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 function WheelStory() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef(null);
+
   const interactionRef = useRef<HTMLDivElement>(null);
+
   useWheel(ref, (event) => {
     console.log(event);
   });
-  useInteractions(interactionRef);
 
-  return <MantineProvider>
-    <Button onDragStart={() => {
-      console.log("hey")
-    }} ref={ref}>Test</Button>
+  useInteractions(interactionRef, {
+    onDrag: (start, end, movement) => {
+      console.log(start, end, movement);
+    },
+    onClick: (position) => {
+      console.log("click", position);
+    },
+    onMouseMove: (position) => {
+      console.log("move", position);
+    }
+  });
+
+  return <>
     <div ref={interactionRef} style={{ width: 300, height: 300, border: "1px solid black" }} />
-  </MantineProvider>
+    <Button />
+  </>
 }
 
 /*
