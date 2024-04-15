@@ -10,10 +10,10 @@ export default defineConfig({
       entry: 'src/lib/index.tsx',
       name: 'MyLib',
       formats: ['es'],
-      fileName: (format) => `my-lib.js`
+      fileName: (format) => `my-lib.js`,
     },
     rollupOptions: {
-      external: /^react/
+      external: /^react/,
     }
-  }
+  },
 })

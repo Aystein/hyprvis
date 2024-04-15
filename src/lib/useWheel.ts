@@ -17,7 +17,16 @@ export function useWheel(ref: RefObject<HTMLElement>, callback: (event: Normaliz
         }
 
         const handler = (event: WheelEvent) => {
-            callbackRef.current(normalizeWheelEvent(event));
+            event.preventDefault();
+
+            // Get x,y coordinates relative to ref
+            const rect = element.getBoundingClientRect();
+
+            callbackRef.current({
+                ...normalizeWheelEvent(event),
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top,
+            });
         };
 
         element.addEventListener("wheel", handler, { passive: false });

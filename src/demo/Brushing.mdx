@@ -1,0 +1,50 @@
+import { Story } from '@storybook/blocks';
+import * as BrushStories from './Brush.stories';
+
+
+## Brush
+
+The `useBrush` hook makes the given element brushable.
+
+<Story of={BrushStories.BothBrush} />
+
+```tsx
+import { useBrush } from 'hyprvis';
+
+function BrushDemo() {
+    const ref = useRef();
+    const { brush, setBrush } = useBrush(ref);
+
+    return <svg ref={ref}>
+        {
+            brush ? <BrushRect parent={ref} direction="both" onChange={(brush) => {
+            setBrush(brush)
+        }} brush={brush} /> : null }
+    </svg>
+}
+```
+
+
+## Direction
+
+The `direction` prop can control if the brush is only vertical or horizontal, filling the other axis completely.
+
+<Story of={BrushStories.VerticalBrush} />
+
+
+```tsx
+import { useBrush } from 'hyprvis';
+
+function BrushDemo() {
+    const ref = useRef();
+    const { brush, setBrush } = useBrush(ref);
+
+    return <svg ref={ref}>
+        {
+            brush ? <BrushRect parent={ref} direction="vertical" onChange={(brush) => {
+            setBrush(brush)
+        }} brush={brush} /> : null }
+    </svg>
+}
+```
+

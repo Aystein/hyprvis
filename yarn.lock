@@ -1653,6 +1653,15 @@
     "@storybook/global" "^5.0.0"
     ts-dedent "^2.0.0"
 
+"@storybook/addon-storysource@^8.0.8":
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-8.0.8.tgz#0533409b79ba95d4c9f5b38639d4667e1bad8e7f"
+  integrity sha512-mhnT+Cd12DZIQvqK1O9NHeCJ9a8j/tJjKw/jxOQ222HfZBNS1UjhqSTEYkXSx3HKs1qiBSz8423+pzEybuRTGQ==
+  dependencies:
+    "@storybook/source-loader" "8.0.8"
+    estraverse "^5.2.0"
+    tiny-invariant "^1.3.1"
+
 "@storybook/addon-toolbars@8.0.8":
   version "8.0.8"
   resolved "https://registry.yarnpkg.com/@storybook/addon-toolbars/-/addon-toolbars-8.0.8.tgz#64d54974941633aef1814d557275127de1a7da9d"
@@ -2114,6 +2123,17 @@
     "@storybook/client-logger" "8.0.8"
     memoizerific "^1.11.3"
     qs "^6.10.0"
+
+"@storybook/source-loader@8.0.8":
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-8.0.8.tgz#29c7dc42e6f8d3648c623d99277def4598f279cb"
+  integrity sha512-3xYr3/ziaiOrJ33r9+XHUZkWmY4Ej6I/ZXr6kTUMdCuia7d+WYkuzULk4DhJ/15Dv0TdygYNZZJKDkgw2sqlRg==
+  dependencies:
+    "@storybook/csf" "^0.1.2"
+    "@storybook/types" "8.0.8"
+    estraverse "^5.2.0"
+    lodash "^4.17.21"
+    prettier "^3.1.1"
 
 "@storybook/telemetry@8.0.8":
   version "8.0.8"
@@ -4522,6 +4542,11 @@ ignore@^5.2.0, ignore@^5.3.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.3.1.tgz#5073e554cd42c5b33b394375f538b8593e34d4ef"
   integrity sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==
+
+immer@^10.0.4:
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-10.0.4.tgz#09af41477236b99449f9d705369a4daaf780362b"
+  integrity sha512-cuBuGK40P/sk5IzWa9QPUaAdvPHjkk1c+xYsd9oZw+YQQEV+10G0P5uMpGctZZKnyQ+ibRO08bD25nWLmYi2pw==
 
 import-fresh@^3.2.1:
   version "3.3.0"
