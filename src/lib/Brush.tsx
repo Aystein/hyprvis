@@ -26,7 +26,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange }: Brush
     callbacksRef.current = { onChange };
 
     useInteractions(ref, {
-        onClick: (event) => {
+        onClick: () => {
             callbacksRef.current.onChange?.(undefined);
         },
         onDrag: (event) => {
@@ -36,10 +36,10 @@ export function BrushRect({ parent, brush, direction = 'both', onChange }: Brush
               y: event.clientY - bounds.top,
             };
 
-            let newBrush = { ...brush };
+            const newBrush = { ...brush };
 
             switch (event.target.id) {
-                case id:
+                case id: {
                     const w = brush.x2 - brush.x1;
                     const h = brush.y2 - brush.y1;
                     newBrush.x1 = clamp(relativePosition.x - event.anchor.x, 0, bounds.width - w);
@@ -47,6 +47,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange }: Brush
                     newBrush.x2 = newBrush.x1 + brush.x2 - brush.x1;
                     newBrush.y2 = newBrush.y1 + brush.y2 - brush.y1;
                     break;
+                }
                 case `${id}-west`:
                     newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
                     break;

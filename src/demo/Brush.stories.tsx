@@ -1,20 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { BrushRect } from '../lib/Brush';
 import { useBrush } from '../lib/useBrush';
-import { useInteractions } from '../lib/useInteractions';
 
 const meta: Meta = {};
 
 export default meta;
 type Story = StoryObj;
 
+
+
 function BrushStory({ direction }: { direction?: "horizontal" | "vertical" | "both" }) {
-  const boundaries = useRef<SVGSVGElement>(null);
+  const boundaries = useRef(null);
 
   const { brush, setBrush } = useBrush(boundaries, {
-
-  }, {
     direction
   });
 

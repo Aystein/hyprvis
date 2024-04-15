@@ -1,12 +1,12 @@
-import { Story } from '@storybook/blocks';
-import * as BrushStories from './Brush.stories';
+import { Demo1 } from './Demo1';
+import { Demo2 } from './Demo2';
 
 
 ## Brush
 
 The `useBrush` hook makes the given element brushable.
 
-<Story of={BrushStories.BothBrush} />
+<Demo1 />
 
 ```tsx
 import { useBrush } from 'hyprvis';
@@ -29,7 +29,6 @@ function BrushDemo() {
 
 The `direction` prop can control if the brush is only vertical or horizontal, filling the other axis completely.
 
-<Story of={BrushStories.VerticalBrush} />
 
 
 ```tsx
@@ -48,3 +47,6 @@ function BrushDemo() {
 }
 ```
 
+## Controlled
+
+<Demo2 />

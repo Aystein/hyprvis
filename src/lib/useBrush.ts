@@ -1,15 +1,24 @@
-import { RefObject, useState } from "react";
+import { RefObject, useRef } from "react";
 import { useInteractions } from "./useInteractions";
 import { Brush } from "./interfaces";
 import { clamp } from "./util";
+import { useControlledUncontrolled } from "./useUncontrolled";
 
 
-export function useBrush(ref: RefObject<any>, callbacks: {
-
-}, options: {
+export function useBrush(ref: RefObject<HTMLElement>, options: {
+    value?: Brush;
+    onChange?: (brush: Brush) => void;
+    defaultValue?: Brush;
     direction?: "horizontal" | "vertical" | "both";
 } = {}) {
-    const [brush, setBrush] = useState<Brush>();
+    const [brush, setBrush] = useControlledUncontrolled({
+        value: options.value,
+        onChange: options.onChange,
+        defaultValue: options.defaultValue,
+    });
+
+    const optionsRef = useRef(options);
+    optionsRef.current = options;
 
     useInteractions(ref, {
         onDrag: (event) => {
@@ -36,6 +45,8 @@ export function useBrush(ref: RefObject<any>, callbacks: {
             newBrush.y2 = clamp(newBrush.y2, 0, bounds.height);
 
             setBrush(newBrush);
+
+            optionsRef.current.onChange?.(newBrush);
         }
     })
 

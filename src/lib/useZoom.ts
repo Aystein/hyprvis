@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import { useWheel } from "./useWheel";
-import { calculateTransform, defaultConstraint, identityZoom } from "./transform";
+import { calculateTransform, defaultConstraint } from "./transform";
 import { useControlledUncontrolled } from "./useUncontrolled";
 import { ZoomTransform } from "./interfaces";
 
@@ -19,9 +19,8 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
 } = {}) {
     const [zoom, setZoom] = useControlledUncontrolled({
         value: options.value,
-        defaultValue: options.defaultValue,
+        defaultValue: options.defaultValue || { x: 0, y: 0, k: 1 },
         onChange: options.onChange,
-        finalValue: identityZoom(),
     });
 
     useWheel(ref, (event) => {

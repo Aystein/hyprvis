@@ -1,7 +1,6 @@
-import { Dispatch, RefObject, useState } from "react";
+import { Dispatch, RefObject } from "react";
 import { ZoomTransform } from "./interfaces";
 import { useInteractions } from "./useInteractions";
-import { identityZoom } from "./transform";
 import { useControlledUncontrolled } from "./useUncontrolled";
 
 export function usePan(ref: RefObject<HTMLElement>, options: {
@@ -11,9 +10,8 @@ export function usePan(ref: RefObject<HTMLElement>, options: {
 } = {}) {
     const [zoom, setZoom] = useControlledUncontrolled({
         value: options.value,
-        defaultValue: options.defaultValue,
+        defaultValue: options.defaultValue || { x: 0, y: 0, k: 1 },
         onChange: options.onChange,
-        finalValue: identityZoom(),
     });
 
     useInteractions(ref, {
