@@ -1,7 +1,7 @@
 import { ZoomTransform } from "../lib/interfaces";
 
 export function TransformTester({ zoom }: { zoom: ZoomTransform }) {
-    return <>
+    /* return <>
         <div style={{
             width: 150, height: 150,
             left: 75 * zoom.k, top: 75 * zoom.k,
@@ -18,5 +18,14 @@ export function TransformTester({ zoom }: { zoom: ZoomTransform }) {
                 <div>y: {zoom.y.toPrecision(2)}</div>
             </div>
         </div>
-    </>
+    </> */
+
+    return <rect
+        x={75 + zoom.x}
+        y={75 + zoom.y}
+        width={150 * zoom.k}
+        height={150 * zoom.k}
+        fill="none"
+        stroke="black"
+        strokeWidth={1} />
 }
