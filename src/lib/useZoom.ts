@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import { useWheel } from "./useWheel";
 import { calculateTransform, defaultConstraint } from "./transform";
-import { useControlledUncontrolled } from "./useUncontrolled";
+import { useControlledUncontrolled } from "./useControlledUncontrolled";
 import { ZoomTransform } from "./interfaces";
 
 /**

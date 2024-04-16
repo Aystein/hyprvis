@@ -1,12 +1,16 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Brushable } from "../Brushable";
 import { Center } from "../Center";
 import { lassoToSvgPath, useLasso } from "../../lib/useLasso";
 
-export function Demo1() {
+export function LassoControlled() {
     const ref = useRef();
+    const [lasso, setLasso] = useState<{ x: number, y: number }[]>();
 
-    const { lasso } = useLasso(ref);
+    useLasso(ref, {
+        value: lasso,
+        onChange: setLasso,
+    });
 
     return <Center>
         <Brushable ref={ref}>

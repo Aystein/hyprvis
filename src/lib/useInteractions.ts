@@ -24,14 +24,42 @@ interface ClickEvent {
     target: HTMLElement;
 }
 
+interface UseInteractionsProps {
+    /**
+     * The minimum distance the mouse has to be dragged before the onDrag event is emitted.
+     */
+    minimumDragDistance?: number;
+
+    /**
+     * Called when the mouse hast been dragged at least minimumDragDistance
+     * pixels from the start point. This event is emitted at max once per frame. 
+     */
+    onDrag?: (event: DragEvent) => void;
+
+    /**
+     * Called when the mouse has been clicked and NOT dragged at least minimumDragDistance pixels.
+     */
+    onClick?: (event: ClickEvent) => void;
+
+    /**
+     * Called when the mouse moves over the element while not dragging.
+     */
+    onMouseMove?: (position: Vector) => void;
+
+    /**
+     * If set to overlay, a full screen overlay div will be added to the dom
+     * after the mouse down event. This is useful if you want to preserve the
+     * cursor of the element while dragging.
+     * 
+     * Otherwise the window will be used as the target for mouse move events.
+     */
+    moveTarget?: 'window' | 'overlay';
+}
+
 /**
  * supports interactions like drag, mousemove etc with an overlay div in the dom
  */
-export function useInteractions(ref: React.RefObject<HTMLElement>, callbacks: {
-    onDrag?: (event: DragEvent) => void;
-    onClick?: (event: ClickEvent) => void;
-    onMouseMove?: (position: Vector) => void;
-}
+export function useInteractions(ref: React.RefObject<HTMLElement>, callbacks: UseInteractionsProps = {}
 ) {
     // Store state in ref for performance
     // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-useeffect
@@ -70,24 +98,27 @@ export function useInteractions(ref: React.RefObject<HTMLElement>, callbacks: {
         const handleMouseDown = (event: MouseEvent) => {
             event.stopPropagation();
             event.preventDefault();
-            
+
             const { x, y } = relativeMousePosition(event);
 
             // Add overlay div to the dom
-            const overlay = document.createElement("div");
+            if (callbacks.moveTarget === 'overlay') {
+                const overlay = document.createElement("div");
 
-            overlay.style.position = "absolute";
-            overlay.style.inset = "0";
+                overlay.style.position = "absolute";
+                overlay.style.inset = "0";
 
-            stateRef.current.overlay = overlay;
+                stateRef.current.overlay = overlay;
+
+                // Get cursor of the element and set it on the overlay
+                const cursor = window.getComputedStyle(element).cursor;
+                overlay.style.cursor = cursor;
+
+                document.body.appendChild(overlay);
+            }
+
             stateRef.current.anchor = { x, y };
             stateRef.current.target = event.target;
-
-            // Get cursor of the element and set it on the overlay
-            const cursor = window.getComputedStyle(element).cursor;
-            overlay.style.cursor = cursor;
-
-            document.body.appendChild(overlay);
 
             // Combines multiple mouse move events into one by only allow
             // one event to be processed every frame
@@ -147,7 +178,7 @@ export function useInteractions(ref: React.RefObject<HTMLElement>, callbacks: {
                 // Last drag event
                 if (stateRef.current.state === 'drag') {
                     const { x, y } = relativeMousePosition(event);
-                    
+
                     stateRef.current.isLastDrag = true;
 
                     debouncedMouseMove({
@@ -169,8 +200,10 @@ export function useInteractions(ref: React.RefObject<HTMLElement>, callbacks: {
                     callbacksRef.current.onClick?.({ x, y, target: stateRef.current.target });
                 }
 
-                overlay.remove();
-                stateRef.current.overlay = null;
+                if (stateRef.current.overlay) {
+                    stateRef.current.overlay.remove();
+                    stateRef.current.overlay = null;
+                }
                 stateRef.current.state = 'idle';
 
                 window.removeEventListener("mouseup", windowMouseUp);

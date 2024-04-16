@@ -1,7 +1,7 @@
 import { Dispatch, RefObject } from "react";
 import { ZoomTransform } from "./interfaces";
 import { useInteractions } from "./useInteractions";
-import { useControlledUncontrolled } from "./useUncontrolled";
+import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
 export function usePan(ref: RefObject<HTMLElement>, options: {
     value?: ZoomTransform,

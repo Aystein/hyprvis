@@ -13,15 +13,15 @@ export function useControlledUncontrolled<T>({
 }: ControlledUncontrolledProps<T>): [T, Dispatch<SetStateAction<T>>] {
   const [internalValue, setInternalValue] = useState(defaultValue);
 
-  // Controlled mode
-  if (value !== undefined) {
-    return [value as T, onChange];
-  }
-
   const handleChange: Dispatch<SetStateAction<T>> = useCallback((val: T) => {
     setInternalValue(val);
     onChange?.(val);
   }, []);
+
+  // Controlled mode
+  if (value !== undefined) {
+    return [value as T, onChange];
+  }
 
   // Uncontrolled mode
   return [internalValue as T, handleChange];

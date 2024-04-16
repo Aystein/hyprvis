@@ -1,7 +1,8 @@
-import { RefObject, useRef, useState } from "react";
+import { RefObject, useRef } from "react";
 import { useInteractions } from "./useInteractions";
 import { clamp } from "./util";
 import { produce } from "immer";
+import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
 export interface LassoEvent {
     lasso: { x: number, y: number }[];
@@ -19,13 +20,25 @@ export function lassoToSvgPath(lasso: { x: number, y: number }[]) {
     }).join(" ");
 }
 
+export type Lasso = { x: number, y: number }[];
+
+export interface LassoProps {
+    onChange?: (points: Lasso) => void;
+}
 
 
 export function useLasso(ref: RefObject<HTMLElement>, callbacks: {
+    value?: Lasso;
     onChange?: (points: { x: number, y: number }[]) => void;
 } = {}) {
     const lastXY = useRef<{ x: number, y: number }>();
-    const [lasso, setLasso] = useState<{ x: number, y: number }[]>();
+
+    const { value, onChange } = callbacks;
+
+    const [internalValue, setInternalValue] = useControlledUncontrolled({
+        value,
+        onChange,
+    })
 
     const callbacksRef = useRef(callbacks);
     callbacksRef.current = callbacks;
@@ -39,7 +52,7 @@ export function useLasso(ref: RefObject<HTMLElement>, callbacks: {
                     event.start,
                     event.end,
                 ];
-                setLasso(newLasso);
+                setInternalValue(newLasso);
                 lastXY.current = event.end;
                 callbacksRef.current.onChange?.(newLasso);
             } else {
@@ -50,10 +63,10 @@ export function useLasso(ref: RefObject<HTMLElement>, callbacks: {
                         y: clamp(event.end.y, 1, bounds.height - 1),
                     }
 
-                    const newLasso = produce(lasso, (draft) => {
+                    const newLasso = produce(internalValue, (draft) => {
                         draft.push(newPoint);
                     });
-                    setLasso(newLasso);
+                    setInternalValue(newLasso);
                     lastXY.current = newPoint;
 
                     callbacksRef.current.onChange?.(newLasso);
@@ -61,7 +74,7 @@ export function useLasso(ref: RefObject<HTMLElement>, callbacks: {
             }
 
             if (event.isLastDrag) {
-                setLasso(undefined);
+                setInternalValue(undefined);
                 lastXY.current = undefined;
 
                 callbacksRef.current.onChange?.(undefined);
@@ -69,5 +82,5 @@ export function useLasso(ref: RefObject<HTMLElement>, callbacks: {
         },
     })
 
-    return { lasso };
+    return { value: internalValue, setValue: setInternalValue };
 }

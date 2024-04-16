@@ -2,7 +2,7 @@ import { RefObject, useRef } from "react";
 import { useInteractions } from "./useInteractions";
 import { Brush } from "./interfaces";
 import { clamp } from "./util";
-import { useControlledUncontrolled } from "./useUncontrolled";
+import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
 
 export function useBrush(ref: RefObject<HTMLElement>, options: {
