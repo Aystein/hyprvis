@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import { Center } from "../Center";
 import { useBrush } from "../../lib/useBrush";
-import { Brushable } from "./Brushable";
+import { Brushable } from "../Brushable";
 import { BrushRect } from "../../lib/Brush";
 import { Brush } from "../../lib";
 
-export function Demo2 () {
+export function Demo2() {
     const interactionRef = useRef();
-    const [brush, setBrush] = useState<Brush>();
+    const [brush, setBrush] = useState<Brush>(null);
 
     useBrush(interactionRef, {
         value: brush,
@@ -16,7 +16,7 @@ export function Demo2 () {
 
     return <Center>
         <Brushable ref={interactionRef}>
-            { brush ? <BrushRect parent={interactionRef} brush={brush} direction="both" onChange={setBrush} /> : null }
+            {brush ? <BrushRect parent={interactionRef} brush={brush} direction="both" onChange={setBrush} /> : null}
         </Brushable>
     </Center>
 }

@@ -27,7 +27,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange }: Brush
 
     useInteractions(ref, {
         onClick: () => {
-            callbacksRef.current.onChange?.(undefined);
+            callbacksRef.current.onChange?.(null);
         },
         onDrag: (event) => {
             const bounds = parent.current.getBoundingClientRect();

@@ -1,3 +1,4 @@
+import { ScaleLinear } from "d3-scale";
 import { ZoomTransform } from "./interfaces";
 
 export function identityZoom(): ZoomTransform {
@@ -14,6 +15,11 @@ export function invertX(transform: ZoomTransform, x: number) {
 
 export function invertY(transform: ZoomTransform, y: number) {
     return (y - transform.y) / transform.k;
+}
+
+export function rescaleX(transform: ZoomTransform, x: ScaleLinear<number, number>) {
+    const newDomain = x.range().map((r) => invertX(transform, r));
+    return x.copy().domain(newDomain.map(x.invert, x));
 }
 
 export function translate(transform: ZoomTransform, x: number, y: number) {
@@ -36,6 +42,8 @@ export function defaultConstraint(transform: ZoomTransform, width: number, heigh
         y1 > y0 ? (y0 + y1) / 2 : Math.min(0, y0) || Math.max(0, y1),
     );
 }
+
+
 
 /**
  * Given a zoom transform, a mouse position and a wheel delta, calculate the new zoom transform

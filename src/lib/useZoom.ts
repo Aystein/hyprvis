@@ -16,6 +16,7 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
     defaultValue?: ZoomTransform,
     onChange?: (value: ZoomTransform) => void,
     constraint?: (transform: ZoomTransform) => ZoomTransform,
+    direction?: 'x' | 'y' | 'xy',
 } = {}) {
     const [zoom, setZoom] = useControlledUncontrolled({
         value: options.value,
@@ -33,6 +34,9 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
 
             newZoom = defaultConstraint(newZoom, bounds.width, bounds.height);
         }
+
+        if (options.direction === 'x') newZoom.y = zoom.y;
+        if (options.direction === 'y') newZoom.x = zoom.x;
 
         setZoom(newZoom);
     });
