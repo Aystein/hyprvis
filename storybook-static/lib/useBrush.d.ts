@@ -1,9 +1,10 @@
 import { Brush } from './interfaces';
 import { RefObject } from '../../node_modules/react';
 
-export declare function useBrush(ref: RefObject<HTMLElement>, callbacks: {
-    onBrush?: (brush: Brush) => void;
-}, options?: {
+export declare function useBrush(ref: RefObject<HTMLElement>, options?: {
+    value?: Brush;
+    onChange?: (brush: Brush) => void;
+    defaultValue?: Brush;
     direction?: "horizontal" | "vertical" | "both";
 }): {
     brush: Brush;

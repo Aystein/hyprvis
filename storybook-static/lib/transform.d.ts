@@ -1,8 +1,10 @@
 import { ZoomTransform } from './interfaces';
+import { ScaleLinear } from 'd3-scale';
 
 export declare function identityZoom(): ZoomTransform;
 export declare function invertX(transform: ZoomTransform, x: number): number;
 export declare function invertY(transform: ZoomTransform, y: number): number;
+export declare function rescaleX(transform: ZoomTransform, x: ScaleLinear<number, number>): ScaleLinear<number, number, never>;
 export declare function translate(transform: ZoomTransform, x: number, y: number): {
     x: number;
     y: number;

@@ -1,0 +1,58 @@
+import { PanUsage } from '../../../src/demo/Hooks/PanUsage';
+
+### Demo
+
+Use the mouse to move the datasaurus.
+
+<PanUsage />
+
+### Usage
+
+```tsx
+export function PanUsage () {
+    const interactionRef = useRef();
+    const { zoom } = usePan(interactionRef, {});
+
+    return <Center>
+        <Brushable ref={interactionRef}>
+            <TransformTester zoom={zoom} />
+        </Brushable>
+    </Center>
+}
+```
+
+### API
+
+#### `value`
+
+```ts
+value?: ZoomTransform
+```
+
+Optional value that can be used to control the `usePan` hook in conjunction with `onChange`.
+
+#### `onChange`
+
+```ts
+onChange?: (value: ZoomTransform) => void
+```
+
+Event that is fired whenever the pan changes. This is useful for controlling the state of this hook.
+
+
+
+#### `direction`
+
+```ts
+direction?: 'x' | 'y' | 'xy'
+```
+
+Restricts the orientation of the pan to the given axis. Useful when zooming on scales for instance.
+
+#### `constraint`
+
+```ts
+constraint?: (transform: ZoomTransform) => ZoomTransform
+```
+
+The constraint that is applied on the transform. The default constraint will force it to be withing the extent (width, height).

@@ -5,7 +5,7 @@ export function identityZoom(): ZoomTransform {
     return {
         x: 0,
         y: 0,
-        k: 1
+        k: 1,
     };
 }
 
@@ -18,8 +18,13 @@ export function invertY(transform: ZoomTransform, y: number) {
 }
 
 export function rescaleX(transform: ZoomTransform, x: ScaleLinear<number, number>) {
-    const newDomain = x.range().map((r) => invertX(transform, r));
-    return x.copy().domain(newDomain.map(x.invert, x));
+    const newDomain = x.range().map((r) => invertX(transform, r)).map((r) => x.invert(r));
+    return x.copy().domain(newDomain);
+}
+
+export function rescaleY(transform: ZoomTransform, y: ScaleLinear<number, number>) {
+    const newDomain = y.range().map((r) => invertY(transform, r)).map((r) => y.invert(r));
+    return y.copy().domain(newDomain);
 }
 
 export function translate(transform: ZoomTransform, x: number, y: number) {

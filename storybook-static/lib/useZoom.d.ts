@@ -13,7 +13,8 @@ export declare function useZoom(ref: RefObject<HTMLElement>, options?: {
     defaultValue?: ZoomTransform;
     onChange?: (value: ZoomTransform) => void;
     constraint?: (transform: ZoomTransform) => ZoomTransform;
+    direction?: 'x' | 'y' | 'xy';
 }): {
-    zoom: ZoomTransform;
-    setZoom: import('../../node_modules/react').Dispatch<import("react").SetStateAction<ZoomTransform>>;
+    value: ZoomTransform;
+    setValue: import('../../node_modules/react').Dispatch<import("react").SetStateAction<ZoomTransform>>;
 };

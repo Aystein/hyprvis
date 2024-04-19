@@ -18,14 +18,14 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
     constraint?: (transform: ZoomTransform) => ZoomTransform,
     direction?: 'x' | 'y' | 'xy',
 } = {}) {
-    const [zoom, setZoom] = useControlledUncontrolled({
+    const [internalValue, setInternalValue] = useControlledUncontrolled({
         value: options.value,
         defaultValue: options.defaultValue || { x: 0, y: 0, k: 1 },
         onChange: options.onChange,
     });
 
     useWheel(ref, (event) => {
-        let newZoom = calculateTransform(zoom, event.x, event.y, -event.spinY);
+        let newZoom = calculateTransform(internalValue, event.x, event.y, -event.spinY);
 
         if (options.constraint) {
             newZoom = options.constraint(newZoom);
@@ -35,11 +35,11 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
             newZoom = defaultConstraint(newZoom, bounds.width, bounds.height);
         }
 
-        if (options.direction === 'x') newZoom.y = zoom.y;
-        if (options.direction === 'y') newZoom.x = zoom.x;
+        if (options.direction === 'x') newZoom.y = internalValue.y;
+        if (options.direction === 'y') newZoom.x = internalValue.x;
 
-        setZoom(newZoom);
+        setInternalValue(newZoom);
     });
 
-    return { zoom, setZoom };
+    return { value: internalValue, setValue: setInternalValue };
 }

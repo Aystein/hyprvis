@@ -7,6 +7,7 @@ export function usePan(ref: RefObject<HTMLElement>, options: {
     value?: ZoomTransform,
     defaultValue?: ZoomTransform,
     onChange?: Dispatch<ZoomTransform>,
+    direction?: 'x' | 'y' | 'xy',
 } = {}) {
     const [zoom, setZoom] = useControlledUncontrolled({
         value: options.value,
@@ -17,12 +18,12 @@ export function usePan(ref: RefObject<HTMLElement>, options: {
     useInteractions(ref, {
         onDrag: (event) => {
             setZoom((prev) => ({
-                x: prev.x + event.movementX,
-                y: prev.y + event.movementY,
+                x: options.direction === 'y' ? prev.x : prev.x + event.movementX,
+                y: options.direction === 'x' ? prev.y : prev.y + event.movementY,
                 k: prev.k
             }))
         }
     });
 
-    return { zoom, setZoom };
+    return { value: zoom, setValue: setZoom };
 }

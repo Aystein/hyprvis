@@ -4,16 +4,15 @@ import { TransformTester } from "../TransformTester";
 import { css } from "@emotion/css";
 import { ScaleX } from "./ScaleX";
 import { useZoom } from "../../lib/useZoom";
-import { invertX, rescaleX } from "../../lib/transform";
+import { invertX } from "../../lib/transform";
 import { scaleLinear } from "d3-scale";
-import { ZoomTransform } from "d3-zoom";
 
 const x = scaleLinear().domain([0, 100]).range([0, 300]);
 
 export function Demo1 () {
     const scaleXRef = useRef();
 
-    const { zoom } = useZoom(scaleXRef, {
+    const { value: zoom } = useZoom(scaleXRef, {
         direction: 'x'
     });
 

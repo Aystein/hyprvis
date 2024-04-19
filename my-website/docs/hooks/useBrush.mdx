@@ -1,0 +1,28 @@
+import { BrushUsage } from '../../../src/demo/Hooks/BrushUsage';
+
+
+The `useBrush` hook makes the given element brushable.
+
+## Demo
+
+<BrushUsage />
+
+## Usage
+
+```tsx
+import { useBrush } from 'hyprvis';
+
+function BrushDemo() {
+    const ref = useRef();
+    const { brush, setBrush } = useBrush(ref);
+
+    return <svg ref={ref}>
+        {
+            brush ? <BrushRect parent={ref} direction="both" onChange={(brush) => {
+            setBrush(brush)
+        }} brush={brush} /> : null }
+    </svg>
+}
+```
+
+
