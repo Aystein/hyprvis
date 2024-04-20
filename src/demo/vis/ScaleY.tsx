@@ -2,12 +2,12 @@ import { scaleLinear } from "d3-scale"
 import { forwardRef, useMemo } from "react"
 import { css } from "@emotion/css"
 
-interface ScaleXProps {
+interface ScaleYProps {
     domain: number[];
     count: number;
 }
 
-const ScaleX = forwardRef<HTMLDivElement, ScaleXProps>(function ScaleX({ domain, count = 10 }: { domain: [number, number]; count: number; }, ref) {
+const ScaleY = forwardRef<HTMLDivElement, ScaleYProps>(function ScaleX({ domain, count = 10 }: { domain: [number, number]; count: number; }, ref) {
     const scale = useMemo(() => {
         return scaleLinear().domain(domain).range([0, 100]);
     }, [domain]);
@@ -19,35 +19,36 @@ const ScaleX = forwardRef<HTMLDivElement, ScaleXProps>(function ScaleX({ domain,
     // Set Transform origin to rightmost position
     // and ellipsis to hide overflow
     return <div ref={ref} className={css`
-        height: 200px;
-        user-select: none;
+        width: 200px;
+        height: 100%;
         position: relative;
+        user-select: none;
     `}>
         {
             ticks.map((tick, i) => <div key={i} className={css`
-                width: 1px;
-                height: 8px;
+                width: 8px;
+                height: 1px;
                 background-color: black;
                 position: absolute;
             `} style={{
-                left: `${scale(tick)}%`
+                top: `${scale(tick)}%`
             }}></div>)
         }
         {ticks.map((tick, i) => <div key={i} className={css`
             position: absolute;
             transform-origin: 100% 50%;
-            transform: translateX(-50%) rotateZ(0deg);
             text-align: end;
             white-space: nowrap;
             overflow: hidden;
+            transform: translateY(-50%);
             text-overflow: ellipsis;
             font-size: 12px;
             max-width: 100px;
-            top: 8px;
-        `} style={{
-            left: `${scale(tick)}%`
+            left: 10px;
+        `}  style={{
+            top: `${scale(tick)}%`
         }}>{tick}</div>)}
     </div>
 })
 
-export { ScaleX }
+export { ScaleY }

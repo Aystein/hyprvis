@@ -60,6 +60,7 @@
   "dependencies": {
     "@types/d3-scale": "^4.0.8",
     "d3-scale": "^4.0.2",
+    "gl-matrix": "^3.4.3",
     "immer": "^10.0.4"
   }
 }
