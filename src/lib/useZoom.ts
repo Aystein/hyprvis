@@ -3,6 +3,7 @@ import { useWheel } from "./useWheel";
 import { calculateTransform, defaultConstraint } from "./transform";
 import { useControlledUncontrolled } from "./useControlledUncontrolled";
 import { ZoomTransform } from "./interfaces";
+import { mat4 } from "gl-matrix";
 
 /**
  * useZoom manages zoom state and provides a way to control zoom state.
@@ -20,12 +21,12 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
 } = {}) {
     const [internalValue, setInternalValue] = useControlledUncontrolled({
         value: options.value,
-        defaultValue: options.defaultValue || { x: 0, y: 0, k: 1 },
+        defaultValue: options.defaultValue || mat4.create(),
         onChange: options.onChange,
     });
 
     useWheel(ref, (event) => {
-        let newZoom = calculateTransform(internalValue, event.x, event.y, -event.spinY);
+        let newZoom = calculateTransform(internalValue, event.x, event.y, -event.spinY, options.direction);
 
         if (options.constraint) {
             newZoom = options.constraint(newZoom);
@@ -34,9 +35,6 @@ export function useZoom(ref: RefObject<HTMLElement>, options: {
 
             newZoom = defaultConstraint(newZoom, bounds.width, bounds.height);
         }
-
-        if (options.direction === 'x') newZoom.y = internalValue.y;
-        if (options.direction === 'y') newZoom.x = internalValue.x;
 
         setInternalValue(newZoom);
     });

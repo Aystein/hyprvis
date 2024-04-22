@@ -8,7 +8,11 @@ import { rescaleX, rescaleY } from "../../lib/transform";
 
 export function PanUsage () {
     const interactionRef = useRef();
-    const { value } = usePan(interactionRef);
+
+    // Constraint does nothing
+    const { value } = usePan(interactionRef, {
+        constraint: (transform) => transform,
+    });
 
     const xScale = useMemo(() => {
         return scaleLinear().domain(dinoDomainX).range([0, 300]);

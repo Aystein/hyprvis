@@ -1,3 +1,5 @@
+import { mat4 } from "gl-matrix";
+
 export interface NormalizedWheelEvent {
     spinX: number;
     spinY: number;
@@ -14,8 +16,4 @@ export interface Brush {
     y2: number;
 }
 
-export interface ZoomTransform {
-    x: number;
-    y: number;
-    k: number;
-}
+export type ZoomTransform = mat4
