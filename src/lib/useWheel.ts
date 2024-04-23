@@ -1,13 +1,21 @@
 import { useRef, RefObject, useEffect } from 'react';
 import { normalizeWheelEvent } from './normalizeWheelEvent';
-import { NormalizedWheelEvent } from './interfaces';
+import { Extent, NormalizedWheelEvent } from './interfaces';
+import { outsideExtent, relativeMousePosition } from './util';
+
+export interface UseWheelProps {
+  callback: (event: NormalizedWheelEvent) => void;
+  extent?: Extent;
+}
 
 /**
  * Adds active wheel listener to element and calls callback
  */
-export function useWheel(ref: RefObject<HTMLElement>, callback: (event: NormalizedWheelEvent) => void) {
-  const callbackRef = useRef(callback);
-  callbackRef.current = callback;
+export function useWheel(ref: RefObject<HTMLElement>, props: UseWheelProps) {
+  const propsRef = useRef(props);
+  propsRef.current = props;
+
+  console.log(propsRef.current);
 
   useEffect(() => {
     const element = ref.current;
@@ -17,15 +25,29 @@ export function useWheel(ref: RefObject<HTMLElement>, callback: (event: Normaliz
     }
 
     const handler = (event: WheelEvent) => {
+      const relativePosition = relativeMousePosition(element, {
+        x: event.clientX,
+        y: event.clientY,
+      })
+
+      const bounds = element.getBoundingClientRect();
+      const extent = propsRef.current.extent || {
+        x1: 0,
+        x2: bounds.width,
+        y1: 0,
+        y2: bounds.height,
+      };
+
+      if (outsideExtent(relativePosition, extent)) {
+        return;
+      }
+
       event.preventDefault();
 
-      // Get x,y coordinates relative to ref
-      const rect = element.getBoundingClientRect();
-
-      callbackRef.current({
+      propsRef.current.callback({
         ...normalizeWheelEvent(event),
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
+        x: relativePosition.x,
+        y: relativePosition.y,
       });
     };
 

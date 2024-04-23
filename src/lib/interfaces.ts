@@ -23,4 +23,11 @@ export interface Extent {
     y2: number;
 }
 
+export interface Position {
+    x: number;
+    y: number;
+}
+
+export type Direction = 'x' | 'y' | 'xy';
+
 export type ZoomTransform = mat4

@@ -1,5 +1,5 @@
 import { Dispatch, RefObject } from "react";
-import { ZoomTransform } from "./interfaces";
+import { Direction, ZoomTransform } from "./interfaces";
 import { useInteractions } from "./useInteractions";
 import { useControlledUncontrolled } from "./useControlledUncontrolled";
 import { mat4 } from "gl-matrix";
@@ -10,7 +10,7 @@ export function usePan(ref: RefObject<HTMLElement>, options: {
     defaultValue?: ZoomTransform,
     onChange?: Dispatch<ZoomTransform>,
     constraint?: (transform: ZoomTransform) => ZoomTransform,
-    direction?: 'x' | 'y' | 'xy',
+    direction?: Direction,
 } = {}) {
     const [zoom, setZoom] = useControlledUncontrolled({
         value: options.value,
