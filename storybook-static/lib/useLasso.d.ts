@@ -7,7 +7,6 @@ export type LassoValue = {
 export interface LassoEvent {
     lasso: LassoValue;
     isFirstDrag: boolean;
-    isLastDrag: boolean;
 }
 export declare function lassoToSvgPath(lasso: {
     x: number;

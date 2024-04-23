@@ -15,6 +15,12 @@ export function BrushUsage() {
 
     const [selection, setSelection] = useState<number[]>();
     const { brush, setBrush } = useBrush(interactionRef, {
+        extent: {
+            x1: 50,
+            x2: 250,
+            y1: 50,
+            y2: 250
+        },
         onChange: (value) => {
             if (!value) {
                 setSelection(undefined);
@@ -34,7 +40,12 @@ export function BrushUsage() {
     return <Center>
         <Brushable ref={interactionRef}>
             <DinoData xScale={xScale} yScale={yScale} selection={selection} />
-            {brush ? <BrushRect parent={interactionRef} brush={brush} direction="both" onChange={setBrush} /> : null}
+            {brush ? <BrushRect parent={interactionRef} brush={brush} direction="both" onChange={setBrush} extent={{
+                x1: 50,
+                x2: 250,
+                y1: 50,
+                y2: 250
+            }} /> : null}
         </Brushable>
     </Center>
 }

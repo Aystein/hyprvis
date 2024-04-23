@@ -16,4 +16,11 @@ export interface Brush {
     y2: number;
 }
 
+export interface Extent {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
 export type ZoomTransform = mat4

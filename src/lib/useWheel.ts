@@ -1,38 +1,38 @@
-import { useRef, RefObject, useEffect } from "react";
-import { normalizeWheelEvent } from "./normalizeWheelEvent";
-import { NormalizedWheelEvent } from "./interfaces";
+import { useRef, RefObject, useEffect } from 'react';
+import { normalizeWheelEvent } from './normalizeWheelEvent';
+import { NormalizedWheelEvent } from './interfaces';
 
 /**
  * Adds active wheel listener to element and calls callback
  */
-export function useWheel(ref: RefObject<HTMLElement>, callback: (event: NormalizedWheelEvent) => void){
-    const callbackRef = useRef(callback);
-    callbackRef.current = callback;
+export function useWheel(ref: RefObject<HTMLElement>, callback: (event: NormalizedWheelEvent) => void) {
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
 
-    useEffect(() => {
-        const element = ref.current;
+  useEffect(() => {
+    const element = ref.current;
 
-        if (!element) {
-            return;
-        }
+    if (!element) {
+      return () => {};
+    }
 
-        const handler = (event: WheelEvent) => {
-            event.preventDefault();
+    const handler = (event: WheelEvent) => {
+      event.preventDefault();
 
-            // Get x,y coordinates relative to ref
-            const rect = element.getBoundingClientRect();
+      // Get x,y coordinates relative to ref
+      const rect = element.getBoundingClientRect();
 
-            callbackRef.current({
-                ...normalizeWheelEvent(event),
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top,
-            });
-        };
+      callbackRef.current({
+        ...normalizeWheelEvent(event),
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      });
+    };
 
-        element.addEventListener("wheel", handler, { passive: false });
+    element.addEventListener('wheel', handler, { passive: false });
 
-        return () => {
-            element.removeEventListener("wheel", handler);
-        };
-    }, [ref]);
+    return () => {
+      element.removeEventListener('wheel', handler);
+    };
+  }, [ref]);
 }

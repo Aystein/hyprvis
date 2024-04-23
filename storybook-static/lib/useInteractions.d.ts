@@ -10,7 +10,6 @@ interface DragEvent {
     movementX: number;
     movementY: number;
     isFirstDrag: boolean;
-    isLastDrag: boolean;
     clientX: number;
     clientY: number;
     target: HTMLElement;

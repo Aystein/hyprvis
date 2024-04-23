@@ -93,15 +93,14 @@ export function useLasso(ref: RefObject<HTMLElement>, options: {
                     callbacksRef.current.onChange?.(newLasso);
                 }
             }
-
-            if (event.isLastDrag) {
-                callbacksRef.current.onChangeEnd?.(internalValue);
-                setInternalValue(undefined);
-                lastXY.current = undefined;
-
-                callbacksRef.current.onChange?.(undefined);
-            }
         },
+        onMouseUp: () => {
+            callbacksRef.current.onChangeEnd?.(internalValue);
+            setInternalValue(undefined);
+            lastXY.current = undefined;
+
+            callbacksRef.current.onChange?.(undefined);
+        }
     })
 
     return { value: internalValue, setValue: setInternalValue };
