@@ -1,8 +1,8 @@
-import { RefObject, useRef } from 'react';
-import { useInteractions } from './useInteractions';
-import { Brush, Extent } from './interfaces';
-import { clamp } from './util';
-import { useControlledUncontrolled } from './useControlledUncontrolled';
+import { RefObject, useRef } from "react";
+import { useInteractions } from "./useInteractions";
+import { Brush, Extent } from "./interfaces";
+import { clamp } from "./util";
+import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
 export function useBrush(
   ref: RefObject<HTMLElement>,
@@ -12,9 +12,9 @@ export function useBrush(
     onChangeEnd?: (brush: Brush) => void;
     onClick?: () => void;
     defaultValue?: Brush;
-    direction?: 'horizontal' | 'vertical' | 'both';
+    direction?: "horizontal" | "vertical" | "both";
     extent?: Extent;
-    persistMode?: 'persistent' | 'clear_on_mouse_up';
+    persistMode?: "persistent" | "clear_on_mouse_up";
   } = {},
 ) {
   const [brush, setBrush] = useControlledUncontrolled({
@@ -27,13 +27,18 @@ export function useBrush(
   optionsRef.current = options;
 
   useInteractions(ref, {
-    moveTarget: 'overlay',
+    moveTarget: "overlay",
     extent: options.extent,
     onClick: optionsRef.current.onClick,
     onDrag: (event) => {
       const bounds = ref.current.getBoundingClientRect();
 
-      const extent = optionsRef.current.extent || { x1: 0, y1: 0, x2: bounds.width, y2: bounds.height };
+      const extent = optionsRef.current.extent || {
+        x1: 0,
+        y1: 0,
+        x2: bounds.width,
+        y2: bounds.height,
+      };
 
       const newBrush = {
         x1: Math.min(event.anchor.x, event.end.x),
@@ -42,10 +47,10 @@ export function useBrush(
         y2: Math.max(event.anchor.y, event.end.y),
       };
 
-      if (options.direction === 'horizontal') {
+      if (options.direction === "horizontal") {
         newBrush.y1 = 0;
         newBrush.y2 = bounds.height;
-      } else if (options.direction === 'vertical') {
+      } else if (options.direction === "vertical") {
         newBrush.x1 = 0;
         newBrush.x2 = bounds.width;
       }
@@ -62,7 +67,7 @@ export function useBrush(
     onMouseUp: () => {
       optionsRef.current.onChangeEnd?.(brush);
 
-      if (optionsRef.current.persistMode === 'clear_on_mouse_up') {
+      if (optionsRef.current.persistMode === "clear_on_mouse_up") {
         setBrush(undefined);
       }
     },

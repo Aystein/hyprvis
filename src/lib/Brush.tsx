@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { useId, useRef } from 'react';
-import { useInteractions } from './useInteractions';
-import { clamp } from './util';
-import { Brush, Extent } from './interfaces';
+import * as React from "react";
+import { useId, useRef } from "react";
+import { useInteractions } from "./useInteractions";
+import { clamp } from "./util";
+import { Brush, Extent } from "./interfaces";
 
 const BORDER_WIDTH = 6;
-const EDGE_COLOR = 'transparent';
+const EDGE_COLOR = "transparent";
 const MIN_BRUSH_SIZE = 8;
 const BORDER_CORRECTION = 1;
 
 interface BrushProps {
   brush: Brush;
-  direction?: 'horizontal' | 'vertical' | 'both';
-  onChange?: (brush: { x1: number; y1: number; x2: number; y2: number }) => void;
+  direction?: "horizontal" | "vertical" | "both";
+  onChange?: (brush: Brush) => void;
+  onChangeEnd?: (brush: Brush) => void;
   parent: React.RefObject<SVGSVGElement>;
   extent?: Extent;
 }
@@ -20,21 +21,37 @@ interface BrushProps {
 /**
  * Brush with draggable borders
  */
-export function BrushRect({ parent, brush, direction = 'both', onChange, extent }: BrushProps) {
+export function BrushRect({
+  parent,
+  brush,
+  direction = "both",
+  onChange,
+  onChangeEnd,
+  extent,
+}: BrushProps) {
   const ref = useRef(undefined);
   const id = useId();
 
-  const callbacksRef = useRef({ onChange });
-  callbacksRef.current = { onChange };
+  const callbacksRef = useRef({ onChange, onChangeEnd });
+  callbacksRef.current = { onChange, onChangeEnd };
 
   useInteractions(ref, {
     onClick: () => {
       callbacksRef.current.onChange?.(null);
+      callbacksRef.current.onChangeEnd?.(null);
+    },
+    onMouseUp: () => {
+      callbacksRef.current.onChangeEnd?.(brush);
     },
     onDrag: (event) => {
       const bounds = parent.current.getBoundingClientRect();
 
-      const internalExtent = extent || { x1: 0, y1: 0, x2: bounds.width, y2: bounds.height };
+      const internalExtent = extent || {
+        x1: 0,
+        y1: 0,
+        x2: bounds.width,
+        y2: bounds.height,
+      };
 
       const relativePosition = {
         x: event.clientX - bounds.left,
@@ -47,8 +64,16 @@ export function BrushRect({ parent, brush, direction = 'both', onChange, extent 
         case id: {
           const w = brush.x2 - brush.x1;
           const h = brush.y2 - brush.y1;
-          newBrush.x1 = clamp(relativePosition.x - event.anchor.x, internalExtent.x1, internalExtent.x2 - w);
-          newBrush.y1 = clamp(relativePosition.y - event.anchor.y, internalExtent.y1, internalExtent.y2 - h);
+          newBrush.x1 = clamp(
+            relativePosition.x - event.anchor.x,
+            internalExtent.x1,
+            internalExtent.x2 - w,
+          );
+          newBrush.y1 = clamp(
+            relativePosition.y - event.anchor.y,
+            internalExtent.y1,
+            internalExtent.y2 - h,
+          );
           newBrush.x2 = newBrush.x1 + brush.x2 - brush.x1;
           newBrush.y2 = newBrush.y1 + brush.y2 - brush.y1;
           break;
@@ -57,35 +82,64 @@ export function BrushRect({ parent, brush, direction = 'both', onChange, extent 
           newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
           break;
         case `${id}-ost`:
-          newBrush.x2 = clamp(relativePosition.x, brush.x1 + MIN_BRUSH_SIZE, bounds.width);
+          newBrush.x2 = clamp(
+            relativePosition.x,
+            brush.x1 + MIN_BRUSH_SIZE,
+            bounds.width,
+          );
           break;
         case `${id}-north`:
           newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
           break;
         case `${id}-south`:
-          newBrush.y2 = clamp(relativePosition.y, brush.y1 + MIN_BRUSH_SIZE, bounds.height);
+          newBrush.y2 = clamp(
+            relativePosition.y,
+            brush.y1 + MIN_BRUSH_SIZE,
+            bounds.height,
+          );
           break;
         case `${id}-northwest`:
           newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
           newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
           break;
         case `${id}-northeast`:
-          newBrush.x2 = clamp(relativePosition.x, brush.x1 + MIN_BRUSH_SIZE, bounds.width);
+          newBrush.x2 = clamp(
+            relativePosition.x,
+            brush.x1 + MIN_BRUSH_SIZE,
+            bounds.width,
+          );
           newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
           break;
         case `${id}-southwest`:
           newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
-          newBrush.y2 = clamp(relativePosition.y, brush.y1 + MIN_BRUSH_SIZE, bounds.height);
+          newBrush.y2 = clamp(
+            relativePosition.y,
+            brush.y1 + MIN_BRUSH_SIZE,
+            bounds.height,
+          );
           break;
         case `${id}-southeast`:
-          newBrush.x2 = clamp(relativePosition.x, brush.x1 + MIN_BRUSH_SIZE, bounds.width);
-          newBrush.y2 = clamp(relativePosition.y, brush.y1 + MIN_BRUSH_SIZE, bounds.height);
+          newBrush.x2 = clamp(
+            relativePosition.x,
+            brush.x1 + MIN_BRUSH_SIZE,
+            bounds.width,
+          );
+          newBrush.y2 = clamp(
+            relativePosition.y,
+            brush.y1 + MIN_BRUSH_SIZE,
+            bounds.height,
+          );
           break;
         default:
           break;
       }
 
-      if (newBrush.x1 !== brush.x1 || newBrush.x2 !== brush.x2 || newBrush.y1 !== brush.y1 || newBrush.y2 !== brush.y2) {
+      if (
+        newBrush.x1 !== brush.x1 ||
+        newBrush.x2 !== brush.x2 ||
+        newBrush.y1 !== brush.y1 ||
+        newBrush.y2 !== brush.y2
+      ) {
         callbacksRef.current.onChange?.(newBrush);
       }
     },
@@ -106,7 +160,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange, extent 
         cursor="move"
       />
 
-      {direction !== 'horizontal' ? (
+      {direction !== "horizontal" ? (
         <>
           <rect
             id={`${id}-south`}
@@ -129,7 +183,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange, extent 
         </>
       ) : null}
 
-      {direction !== 'vertical' ? (
+      {direction !== "vertical" ? (
         <>
           <rect
             id={`${id}-west`}
@@ -152,7 +206,7 @@ export function BrushRect({ parent, brush, direction = 'both', onChange, extent 
         </>
       ) : null}
 
-      {direction === 'both' ? (
+      {direction === "both" ? (
         <>
           <rect
             id={`${id}-northwest`}

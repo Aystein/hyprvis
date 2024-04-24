@@ -1,26 +1,21 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { Center } from "../Center";
 import { Brushable } from "../Brushable";
 import { useZoom } from "../../lib/useZoom";
-import { scaleLinear } from "d3-scale";
 import { rescaleX, rescaleY } from "../../lib/transform";
 import { dinoDomainX, dinoDomainY, DinoData } from "./DinoData";
+import { useScale } from "../../lib/useScale";
 
 export function ZoomUsage () {
     const interactionRef = useRef();
-    const { value } = useZoom(interactionRef);
+    const { transform } = useZoom(interactionRef);
 
-    const xScale = useMemo(() => {
-        return scaleLinear().domain(dinoDomainX).range([0, 300]);
-    }, []);
-    
-    const yScale = useMemo(() => {
-        return scaleLinear().domain(dinoDomainY).range([300, 0]);
-    }, []);
+    const xScale = useScale({ domain: dinoDomainX, range: [0, 300], direction: 'x' });
+    const yScale = useScale({ domain: dinoDomainY, range: [300, 0], direction: 'y' });
 
     return <Center>
         <Brushable ref={interactionRef}>
-            <DinoData xScale={rescaleX(value, xScale)} yScale={rescaleY(value, yScale)} selection={[]} />
+            <DinoData xScale={rescaleX(transform, xScale)} yScale={rescaleY(transform, yScale)} selection={[]} />
         </Brushable>
     </Center>
 }
