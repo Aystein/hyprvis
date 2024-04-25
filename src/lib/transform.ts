@@ -1,20 +1,21 @@
 import { ScaleLinear } from "d3-scale";
-import { mat4, quat, vec3 } from "gl-matrix";
-import { ZoomTransform } from "./interfaces";
+import { ZoomExtent, ZoomTransform } from "./interfaces";
+import { clamp } from "./util";
+import { m4 } from "./math";
 
 export function identityZoom(): ZoomTransform {
-  return mat4.create();
+  return m4.I();
 }
 
 export function invertX(transform: ZoomTransform, x: number) {
-  const translation = mat4.getTranslation(vec3.create(), transform);
-  const scale = mat4.getScaling(vec3.create(), transform);
+  const translation = m4.getTranslation(transform);
+  const scale = m4.getScaling(transform);
   return (x - translation[0]) / scale[0];
 }
 
 export function invertY(transform: ZoomTransform, y: number) {
-  const translation = mat4.getTranslation(vec3.create(), transform);
-  const scale = mat4.getScaling(vec3.create(), transform);
+  const translation = m4.getTranslation(transform);
+  const scale = m4.getScaling(transform);
   return (y - translation[1]) / scale[1];
 }
 
@@ -41,8 +42,8 @@ export function rescaleY(
 }
 
 export function translate(transform: ZoomTransform, x: number, y: number) {
-  const scale = mat4.getScaling(vec3.create(), transform);
-  const newTransform = mat4.clone(transform);
+  const scale = m4.getScaling(transform);
+  const newTransform = m4.clone(transform);
   newTransform[12] += x * scale[0];
   newTransform[13] += y * scale[1];
   return newTransform;
@@ -66,7 +67,9 @@ export function defaultConstraint(
 }
 
 /**
- * Given a zoom transform, a mouse position and a wheel delta, calculate the new zoom transform
+ * Given a zoom transform, a mouse position and a wheel delta, calculate the new zoom transform.
+ * Note that this does only apply the zoom extent if it is provided.
+ * The translation extent is applied at a later stage.
  */
 export function calculateTransform(
   zoom: ZoomTransform,
@@ -74,15 +77,20 @@ export function calculateTransform(
   y: number,
   wheel: number,
   direction: "x" | "y" | "xy",
+  zoomExtent?: ZoomExtent,
 ) {
-  const translation = mat4.getTranslation(vec3.create(), zoom);
-  const scale = mat4.getScaling(vec3.create(), zoom);
+  const translation = m4.getTranslation(zoom);
+  const scale = m4.getScaling(zoom);
 
   const zoomFactor = Math.exp(wheel * 0.1);
 
-  const newScaleX = Math.max(1, zoomFactor * scale[0]);
-  const newScaleY = Math.max(1, zoomFactor * scale[1]);
-  // const newScale = zoomFactor * zoom.k;
+  let newScaleX = zoomFactor * scale[0];
+  let newScaleY = zoomFactor * scale[1];
+
+  if (zoomExtent) {
+    newScaleX = clamp(newScaleX, zoomExtent[0], zoomExtent[1]);
+    newScaleY = clamp(newScaleY, zoomExtent[0], zoomExtent[1]);
+  }
 
   // downscaled coordinates relative to anchor
   const zoomPointX = (x - translation[0]) / scale[0];
@@ -94,18 +102,18 @@ export function calculateTransform(
   const newX = translation[0] + offsetX;
   const newY = translation[1] + offsetY;
 
-  return mat4.fromRotationTranslationScale(
-    mat4.create(),
-    quat.create(),
-    vec3.fromValues(
-      direction !== "y" ? newX : translation[0],
-      direction !== "x" ? newY : translation[1],
-      0,
-    ),
-    vec3.fromValues(
-      direction !== "y" ? newScaleX : scale[0],
-      direction !== "x" ? newScaleY : scale[1],
-      0,
-    ),
+  const mtx = m4.I();
+  m4.setTranslation(
+    mtx,
+    direction !== "y" ? newX : translation[0],
+    direction !== "x" ? newY : translation[1],
+    0,
   );
+  m4.setScaling(
+    mtx,
+    direction !== "y" ? newScaleX : scale[0],
+    direction !== "x" ? newScaleY : scale[1],
+    0,
+  );
+  return mtx;
 }

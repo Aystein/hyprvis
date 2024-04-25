@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useId, useRef } from "react";
-import { useInteractions } from "./useInteractions";
+import { useInteractions } from "./hooks/useInteractions";
 import { clamp } from "./util";
 import { Brush, Extent } from "./interfaces";
 

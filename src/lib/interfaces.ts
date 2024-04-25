@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import { Matrix4x4 } from "./math/interfaces";
 
 export interface NormalizedWheelEvent {
   spinX: number;
@@ -23,6 +23,8 @@ export interface Extent {
   y2: number;
 }
 
+export type ZoomExtent = [number, number];
+
 export interface Position {
   x: number;
   y: number;
@@ -30,4 +32,4 @@ export interface Position {
 
 export type Direction = "x" | "y" | "xy";
 
-export type ZoomTransform = mat4;
+export type ZoomTransform = Matrix4x4;

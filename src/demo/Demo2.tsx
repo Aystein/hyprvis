@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Center } from "./Center";
-import { useBrush } from "../lib/useBrush";
+import { useBrush } from "../lib/hooks/useBrush";
 import { Brushable } from "./Brushable";
 import { BrushRect } from "../lib/Brush";
-import { Brush } from "../lib";
+import { Brush } from "../lib/interfaces";
 
 export function Demo2() {
     const interactionRef = useRef();

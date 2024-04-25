@@ -1,37 +1,40 @@
 import { useRef, useState } from "react";
-import { useZoom } from "../lib/useZoom";
+import { useZoom } from "../lib/hooks/useZoom";
 import { Brushable } from "./Brushable";
 import { Center } from "./Center";
 import { dinoDomainX, dinoDomainY, DinoData } from "./Hooks/DinoData";
-import { useScale } from "../lib/useScale";
-import { usePan } from "../lib/usePan";
+import { useScale } from "../lib/hooks/useScale";
+import { usePan } from "../lib/hooks/usePan";
 import { css } from "@emotion/css";
 import { ScaleX } from "./vis/ScaleX";
 import { ScaleY } from "./vis/ScaleY";
-import { mat4 } from "gl-matrix";
+import { m4 } from "../lib/math";
 
 export function SyncedBrush() {
     const interactionRef = useRef();
     const scaleXRef = useRef();
     const scaleYRef = useRef();
 
-    const [transform, setTransform] = useState(mat4.create());
+    const [transform, setTransform] = useState(m4.I());
 
     useZoom(interactionRef, {
         value: transform,
         onChange: setTransform,
+        zoomExtent: [1, 10],
     });
 
     useZoom(scaleXRef, {
         direction: 'x',
         value: transform,
         onChange: setTransform,
+        zoomExtent: [1, 10],
     });
 
     useZoom(scaleYRef, {
         direction: 'y',
         value: transform,
         onChange: setTransform,
+        zoomExtent: [1, 10],
     });
 
     usePan(interactionRef, {

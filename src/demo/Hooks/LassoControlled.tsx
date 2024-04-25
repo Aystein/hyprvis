@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Brushable } from "../Brushable";
 import { Center } from "../Center";
-import { LassoValue, lassoToSvgPath, useLasso } from "../../lib/useLasso";
+import { LassoValue, lassoToSvgPath, useLasso } from "../../lib/hooks/useLasso";
 import { DinoData } from "./DinoData";
 import { scaleLinear } from "d3-scale";
 

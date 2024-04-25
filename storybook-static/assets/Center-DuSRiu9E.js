@@ -1,1 +1,0 @@
-import{j as t}from"./jsx-runtime-DRTy3Uxn.js";function n({children:e}){return t.jsx("div",{style:{display:"flex",justifyContent:"center",alignItems:"center",padding:16},children:e})}n.__docgenInfo={description:"",methods:[],displayName:"Center",props:{children:{required:!0,tsType:{name:"ReactReactNode",raw:"React.ReactNode"},description:""}}};export{n as C};

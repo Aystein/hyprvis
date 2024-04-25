@@ -1,1 +1,0 @@
-import{r as l}from"./index-BBkUAzwr.js";function i({value:r,defaultValue:s,onChange:t=()=>{}}){const[u,o]=l.useState(s),c=l.useCallback(e=>{o(e),t==null||t(e)},[]);return r!==void 0?[r,t]:[u,c]}export{i as u};

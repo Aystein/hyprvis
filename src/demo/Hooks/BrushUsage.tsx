@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { Center } from "../Center";
-import { useBrush } from "../../lib/useBrush";
+import { useBrush } from "../../lib/hooks/useBrush";
 import { Brushable } from "../Brushable";
 import { BrushRect } from "../../lib/Brush";
 import { DinoData, dinoDomainX, dinoDomainY } from "./DinoData";
 import { dinoData } from "../DinoData";
-import { useScale } from "../../lib/useScale";
+import { useScale } from "../../lib/hooks/useScale";
 import { Brush } from "../../lib";
 
 export function BrushUsage() {

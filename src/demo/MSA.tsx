@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { clamp } from "../lib/util";
-import { mat4 } from "gl-matrix";
 import { generateRandomAlignment } from "./SequenceGenerator";
-import { useScale } from "../lib/useScale";
-import { useZoom } from "../lib/useZoom";
-import { usePan } from "../lib/usePan";
+import { useScale } from "../lib/hooks/useScale";
+import { useZoom } from "../lib/hooks/useZoom";
+import { usePan } from "../lib/hooks/usePan";
 import { BrushRect } from "../lib/Brush";
-import { useBrush } from "../lib/useBrush";
+import { useBrush } from "../lib/hooks/useBrush";
+import { m4 } from "../lib/math";
 
 // Return clustal default color
 function getColor(alteration: string) {
@@ -90,7 +90,7 @@ export function MSA() {
     const dpi = window.devicePixelRatio;
     const width = 600;
     const height = 400;
-    const [transform, setTransform] = React.useState(mat4.create());
+    const [transform, setTransform] = React.useState(m4.I());
 
     const svgRef = React.useRef<SVGSVGElement>(null);
 
@@ -226,9 +226,9 @@ export function MSA() {
                             const scale = xLength / (x2 - x1);
 
                             // Find translation of ZoomTransform from overview to detail
-                            const t = mat4.create();
-                            mat4.translate(t, t, [-x1, 0, 0]);
-                            mat4.scale(t, t, [scale, 1, 1]);
+                            const t = m4.I();
+                            m4.translate(t, t, [-x1, 0, 0]);
+                            m4.scale(t, t, [scale, 1, 1]);
                             setTransform(t);
 
                         }} parent={svgRef} direction="horizontal" /> : null }

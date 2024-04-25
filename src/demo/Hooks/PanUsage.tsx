@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { scaleLinear } from "d3-scale";
 import { Center } from "../Center";
-import { usePan } from "../../lib/usePan";
+import { usePan } from "../../lib/hooks/usePan";
 import { Brushable } from "../Brushable";
 import { dinoDomainX, dinoDomainY, DinoData } from "./DinoData";
 import { rescaleX, rescaleY } from "../../lib/transform";
