@@ -49,6 +49,13 @@ export function BrushUsage() {
       setSelection(undefined);
     },
     onChangeEnd,
+    direction: "x",
+    extent: {
+      x1: 110,
+      x2: 298,
+      y1: 110,
+      y2: 298,
+    },
   });
 
   return (
@@ -59,9 +66,15 @@ export function BrushUsage() {
           <BrushRect
             parent={interactionRef}
             brush={brush}
-            direction="both"
+            direction="x"
             onChange={setBrush}
             onChangeEnd={onChangeEnd}
+            extent={{
+              x1: 110,
+              x2: 298,
+              y1: 110,
+              y2: 298,
+            }}
           />
         ) : null}
       </Brushable>

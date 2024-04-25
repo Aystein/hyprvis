@@ -5,6 +5,7 @@ import { useScale } from "../lib/hooks/useScale";
 import { dinoDomainX, dinoDomainY } from "./Hooks/DinoData";
 import { dinoData } from "./DinoData";
 import { usePan } from "../lib/hooks/usePan";
+import { outsideExtent } from "../lib/util";
 
 const size = 400;
 
@@ -35,15 +36,14 @@ export function CanvasRendering() {
     value: transform,
     onChange: setTransform,
     zoomExtent: [1, 10],
+    transformOrigin: [margin.l, 0],
     extent: {
       x1: margin.l,
       x2: size,
-      y1: margin.b,
-      y2: size,
+      y1: 0,
+      y2: size - margin.b,
     },
   });
-
-  console.log(transform[12]);
 
   usePan(ref, {
     value: transform,
@@ -52,7 +52,7 @@ export function CanvasRendering() {
 
   const xScale = useScale({
     domain: dinoDomainX,
-    range: [margin.l, size],
+    range: [0, size - margin.l],
     transform,
     direction: "x",
   });
@@ -66,30 +66,53 @@ export function CanvasRendering() {
 
   useRenderLoop(() => {
     const ctx = ref.current.getContext("2d");
-    ctx.clearRect(0, 0, size, size);
+    ctx.resetTransform();
+    // ctx.scale(2, 2);
+    const scale = window.devicePixelRatio;
+    ctx.clearRect(0, 0, size * scale, size * scale);
 
     dinoData.forEach((dino) => {
+      let x = xScale(dino.x) + margin.l;
+      let y = yScale(dino.y);
+
+      x *= scale;
+      y *= scale;
+
+      if (
+        outsideExtent(
+          { x: x / scale, y: y / scale },
+          { x1: margin.l, x2: size, y1: 0, y2: size - margin.b },
+        )
+      ) {
+        return;
+      }
+
       ctx.beginPath();
-      ctx.arc(xScale(dino.x), yScale(dino.y), 5, 0, Math.PI * 2);
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
       ctx.fill();
     });
 
     // Draw x scale
     xScale.ticks().forEach((tick) => {
-      const x = xScale(tick);
+      let x = xScale(tick) + margin.l;
+      let y = size - margin.b;
+
+      x *= scale;
+      y *= scale;
+
       ctx.beginPath();
-      ctx.moveTo(x, size - margin.b);
-      ctx.lineTo(x, size - margin.b + 5);
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 5);
       ctx.stroke();
-      ctx.fillText(tick.toString(), x, size - margin.b + 15);
+      ctx.fillText(tick.toString(), x, y + 15);
     });
   });
 
   return (
     <canvas
       ref={ref}
-      width={size}
-      height={size}
+      width={size * window.devicePixelRatio}
+      height={size * window.devicePixelRatio}
       style={{ width: size, height: size }}
     />
   );

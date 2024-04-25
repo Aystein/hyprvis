@@ -1,6 +1,6 @@
 import { RefObject, useRef } from "react";
 import { useInteractions } from "./useInteractions";
-import { Brush, Extent } from "../interfaces";
+import { Brush, Direction, Extent } from "../interfaces";
 import { clamp } from "../util";
 import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
@@ -10,7 +10,7 @@ interface UseBrushProps {
   onChangeEnd?: (brush: Brush) => void;
   onClick?: () => void;
   defaultValue?: Brush;
-  direction?: "horizontal" | "vertical" | "both";
+  direction?: Direction;
   extent?: Extent;
   persistMode?: "persistent" | "clear_on_mouse_up";
 }
@@ -49,10 +49,10 @@ export function useBrush(
         y2: Math.max(event.anchor.y, event.end.y),
       };
 
-      if (options.direction === "horizontal") {
+      if (options.direction === "x") {
         newBrush.y1 = 0;
         newBrush.y2 = bounds.height;
-      } else if (options.direction === "vertical") {
+      } else if (options.direction === "y") {
         newBrush.x1 = 0;
         newBrush.x2 = bounds.width;
       }

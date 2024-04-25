@@ -2,7 +2,7 @@ import * as React from "react";
 import { useId, useRef } from "react";
 import { useInteractions } from "./hooks/useInteractions";
 import { clamp } from "./util";
-import { Brush, Extent } from "./interfaces";
+import { Brush, Direction, Extent } from "./interfaces";
 
 const BORDER_WIDTH = 6;
 const EDGE_COLOR = "transparent";
@@ -11,7 +11,7 @@ const BORDER_CORRECTION = 1;
 
 interface BrushProps {
   brush: Brush;
-  direction?: "horizontal" | "vertical" | "both";
+  direction?: Direction;
   onChange?: (brush: Brush) => void;
   onChangeEnd?: (brush: Brush) => void;
   parent: React.RefObject<SVGSVGElement>;
@@ -24,7 +24,7 @@ interface BrushProps {
 export function BrushRect({
   parent,
   brush,
-  direction = "both",
+  direction = "xy",
   onChange,
   onChangeEnd,
   extent,
@@ -160,7 +160,7 @@ export function BrushRect({
         cursor="move"
       />
 
-      {direction !== "horizontal" ? (
+      {direction !== "x" ? (
         <>
           <rect
             id={`${id}-south`}
@@ -183,7 +183,7 @@ export function BrushRect({
         </>
       ) : null}
 
-      {direction !== "vertical" ? (
+      {direction !== "y" ? (
         <>
           <rect
             id={`${id}-west`}
@@ -206,7 +206,7 @@ export function BrushRect({
         </>
       ) : null}
 
-      {direction === "both" ? (
+      {direction === "xy" ? (
         <>
           <rect
             id={`${id}-northwest`}

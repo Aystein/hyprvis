@@ -6,18 +6,30 @@ import { rescaleX, rescaleY } from "../../lib/transform";
 import { dinoDomainX, dinoDomainY, DinoData } from "./DinoData";
 import { useScale } from "../../lib/hooks/useScale";
 
-export function ZoomUsage () {
-    const interactionRef = useRef();
-    const { transform } = useZoom(interactionRef, {
-        zoomExtent: [1, 3],
-    });
+export function ZoomUsage() {
+  const interactionRef = useRef();
+  const { transform } = useZoom(interactionRef, {
+    zoomExtent: [1, 10],
+  });
 
-    const xScale = useScale({ domain: dinoDomainX, range: [0, 300], direction: 'x' });
-    const yScale = useScale({ domain: dinoDomainY, range: [300, 0], direction: 'y' });
+  const xScale = useScale({
+    domain: dinoDomainX,
+    range: [0, 300],
+    direction: "x",
+    transform,
+  });
+  const yScale = useScale({
+    domain: dinoDomainY,
+    range: [300, 0],
+    direction: "y",
+    transform,
+  });
 
-    return <Center>
-        <Brushable ref={interactionRef}>
-            <DinoData xScale={rescaleX(transform, xScale)} yScale={rescaleY(transform, yScale)} selection={[]} />
-        </Brushable>
+  return (
+    <Center>
+      <Brushable ref={interactionRef}>
+        <DinoData xScale={xScale} yScale={yScale} selection={[]} />
+      </Brushable>
     </Center>
+  );
 }
