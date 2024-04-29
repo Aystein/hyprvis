@@ -34,7 +34,7 @@ export function checkForInclusion(
   lasso: LassoValue,
   point: { x: number; y: number },
 ) {
-  let cIntersect = 0;
+  let numberOfIntersections = 0;
 
   for (let i = 0, j = lasso.length - 1; i < lasso.length; j = i++) {
     const { x: prevX, y: prevY } = lasso[j];
@@ -44,11 +44,11 @@ export function checkForInclusion(
       y > point.y !== prevY > point.y &&
       point.x < ((prevX - x) * (point.y - y)) / (prevY - y) + x
     ) {
-      cIntersect++;
+      numberOfIntersections++;
     }
   }
 
-  return cIntersect % 2 !== 0;
+  return numberOfIntersections % 2 !== 0;
 }
 
 export function useLasso(

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useId, useRef } from "react";
 import { useInteractions } from "./hooks/useInteractions";
 import { clamp } from "./util";
-import { Brush, Direction, Extent } from "./interfaces";
+import { Brush, Direction, Extent, PersistMode } from "./interfaces";
 
 const BORDER_WIDTH = 6;
 const EDGE_COLOR = "transparent";
@@ -16,6 +16,7 @@ interface BrushProps {
   onChangeEnd?: (brush: Brush) => void;
   parent: React.RefObject<SVGSVGElement>;
   extent?: Extent;
+  clearOnMouse?: boolean;
 }
 
 /**
@@ -28,6 +29,7 @@ export function BrushRect({
   onChange,
   onChangeEnd,
   extent,
+  clearOnMouse = true,
 }: BrushProps) {
   const ref = useRef(undefined);
   const id = useId();
@@ -37,8 +39,10 @@ export function BrushRect({
 
   useInteractions(ref, {
     onClick: () => {
-      callbacksRef.current.onChange?.(null);
-      callbacksRef.current.onChangeEnd?.(null);
+      if (clearOnMouse) {
+        callbacksRef.current.onChange?.(null);
+        callbacksRef.current.onChangeEnd?.(null);
+      }
     },
     onMouseUp: () => {
       callbacksRef.current.onChangeEnd?.(brush);

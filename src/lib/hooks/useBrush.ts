@@ -1,6 +1,6 @@
 import { RefObject, useRef } from "react";
 import { useInteractions } from "./useInteractions";
-import { Brush, Direction, Extent } from "../interfaces";
+import { Brush, Direction, Extent, PersistMode } from "../interfaces";
 import { clamp } from "../util";
 import { useControlledUncontrolled } from "./useControlledUncontrolled";
 
@@ -12,7 +12,7 @@ interface UseBrushProps {
   defaultValue?: Brush;
   direction?: Direction;
   extent?: Extent;
-  persistMode?: "persistent" | "clear_on_mouse_up";
+  persistMode?: PersistMode;
 }
 
 export function useBrush(

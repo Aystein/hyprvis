@@ -1,5 +1,7 @@
 import { Matrix4x4 } from "./math/interfaces";
 
+export type PersistMode = "persistent" | "clear_on_mouse_up";
+
 export interface NormalizedWheelEvent {
   spinX: number;
   spinY: number;
