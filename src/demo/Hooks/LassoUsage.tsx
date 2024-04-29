@@ -1,42 +1,62 @@
 import { useMemo, useRef, useState } from "react";
+import { scaleLinear } from "d3-scale";
 import { Brushable } from "../Brushable";
 import { Center } from "../Center";
-import { checkForInclusion, lassoToSvgPath, useLasso } from "../../lib/hooks/useLasso";
-import { scaleLinear } from "d3-scale";
+import {
+  checkForInclusion,
+  lassoToSvgPath,
+  useLasso,
+} from "../../lib/hooks/useLasso";
 import { DinoData, dinoDomainX, dinoDomainY } from "./DinoData";
 import { dinoData } from "../DinoData";
 
 export function LassoUsage() {
-    const ref = useRef();
+  const ref = useRef();
 
-    const xScale = useMemo(() => {
-        return scaleLinear().domain(dinoDomainX).range([0, 300]);
-    }, []);
+  const xScale = useMemo(() => {
+    return scaleLinear().domain(dinoDomainX).range([0, 300]);
+  }, []);
 
-    const yScale = useMemo(() => {
-        return scaleLinear().domain(dinoDomainY).range([300, 0]);
-    }, []);
+  const yScale = useMemo(() => {
+    return scaleLinear().domain(dinoDomainY).range([300, 0]);
+  }, []);
 
-    const { value } = useLasso(ref, {
-        onChangeEnd: (lasso) => {
-            const selection = [];
-            dinoData.forEach((point, i) => {
-                if (checkForInclusion(lasso, { x: xScale(point.x), y: yScale(point.y) })) {
-                    selection.push(i);
-                }
-            });
-            setSelection(selection);
-        },
-    });
+  const [selection, setSelection] = useState<number[]>();
 
-    const [selection, setSelection] = useState<number[]>();
+  const { value } = useLasso(ref, {
+    onChangeEnd: (lasso) => {
+      if (lasso) {
+        const newSelection = [];
 
+        dinoData.forEach((point, i) => {
+          if (
+            checkForInclusion(lasso, { x: xScale(point.x), y: yScale(point.y) })
+          ) {
+            newSelection.push(i);
+          }
+        });
 
-    
-    return <Center>
-        <Brushable ref={ref}>
-            <DinoData xScale={xScale} yScale={yScale} selection={selection} />
-            { value ? <path d={lassoToSvgPath(value)} fill="none" stroke="black" strokeDasharray="4" strokeWidth={2} /> : null }
-        </Brushable>
+        setSelection(newSelection);
+      } else {
+        setSelection(undefined);
+      }
+    },
+  });
+
+  return (
+    <Center>
+      <Brushable ref={ref}>
+        <DinoData xScale={xScale} yScale={yScale} selection={selection} />
+        {value ? (
+          <path
+            d={lassoToSvgPath(value)}
+            fill="none"
+            stroke="black"
+            strokeDasharray="4"
+            strokeWidth={2}
+          />
+        ) : null}
+      </Brushable>
     </Center>
+  );
 }

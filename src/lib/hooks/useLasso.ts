@@ -41,14 +41,14 @@ export function checkForInclusion(
     const { x, y } = lasso[i];
 
     if (
-      y > point.y != prevY > point.y &&
+      y > point.y !== prevY > point.y &&
       point.x < ((prevX - x) * (point.y - y)) / (prevY - y) + x
     ) {
       cIntersect++;
     }
   }
 
-  return cIntersect & 1;
+  return cIntersect % 2 !== 0;
 }
 
 export function useLasso(
@@ -76,27 +76,28 @@ export function useLasso(
         setInternalValue(newLasso);
         lastXY.current = event.end;
         callbacksRef.current.onChange?.(newLasso);
-      } else {
-        // if distance is high enough
-        if (
-          Math.abs(event.end.x - lastXY.current.x) +
-            Math.abs(event.end.y - lastXY.current.y) >
-          (options.minDistanceToCreatePoint ?? 6)
-        ) {
-          const newPoint = {
-            x: clamp(event.end.x, 1, bounds.width - 1),
-            y: clamp(event.end.y, 1, bounds.height - 1),
-          };
+      } else if (
+        Math.abs(event.end.x - lastXY.current.x) +
+          Math.abs(event.end.y - lastXY.current.y) >
+        (options.minDistanceToCreatePoint ?? 6)
+      ) {
+        const newPoint = {
+          x: clamp(event.end.x, 1, bounds.width - 1),
+          y: clamp(event.end.y, 1, bounds.height - 1),
+        };
 
-          const newLasso = produce(internalValue, (draft) => {
-            draft.push(newPoint);
-          });
-          setInternalValue(newLasso);
-          lastXY.current = newPoint;
+        const newLasso = produce(internalValue, (draft) => {
+          draft.push(newPoint);
+        });
+        setInternalValue(newLasso);
+        lastXY.current = newPoint;
 
-          callbacksRef.current.onChange?.(newLasso);
-        }
+        callbacksRef.current.onChange?.(newLasso);
       }
+    },
+    onClick: () => {
+      callbacksRef.current.onChange?.(undefined);
+      callbacksRef.current.onChangeEnd?.(undefined);
     },
     onMouseUp: () => {
       callbacksRef.current.onChangeEnd?.(internalValue);

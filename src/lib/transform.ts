@@ -1,21 +1,21 @@
 import { ScaleLinear } from "d3-scale";
 import { ZoomExtent, ZoomTransform } from "./interfaces";
 import { clamp } from "./util";
-import { m4 } from "./math";
+import { m4, v3 } from "./math";
 
 export function identityZoom(): ZoomTransform {
   return m4.I();
 }
 
 export function invertX(transform: ZoomTransform, x: number) {
-  const translation = m4.getTranslation(transform);
-  const scale = m4.getScaling(transform);
+  const translation = m4.getTranslation(v3.I(), transform);
+  const scale = m4.getScaling(v3.I(), transform);
   return (x - translation[0]) / scale[0];
 }
 
 export function invertY(transform: ZoomTransform, y: number) {
-  const translation = m4.getTranslation(transform);
-  const scale = m4.getScaling(transform);
+  const translation = m4.getTranslation(v3.I(), transform);
+  const scale = m4.getScaling(v3.I(), transform);
   return (y - translation[1]) / scale[1];
 }
 
@@ -42,7 +42,7 @@ export function rescaleY(
 }
 
 export function translate(transform: ZoomTransform, x: number, y: number) {
-  const scale = m4.getScaling(transform);
+  const scale = m4.getScaling(v3.I(), transform);
   const newTransform = m4.clone(transform);
   newTransform[12] += x * scale[0];
   newTransform[13] += y * scale[1];
@@ -79,8 +79,8 @@ export function calculateTransform(
   direction: "x" | "y" | "xy",
   zoomExtent?: ZoomExtent,
 ) {
-  const translation = m4.getTranslation(zoom);
-  const scale = m4.getScaling(zoom);
+  const translation = m4.getTranslation(v3.I(), zoom);
+  const scale = m4.getScaling(v3.I(), zoom);
 
   const zoomFactor = Math.exp(wheel * 0.1);
 

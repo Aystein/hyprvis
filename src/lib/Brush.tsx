@@ -79,55 +79,79 @@ export function BrushRect({
           break;
         }
         case `${id}-west`:
-          newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
+          newBrush.x1 = clamp(
+            relativePosition.x,
+            internalExtent.x1,
+            brush.x2 - MIN_BRUSH_SIZE,
+          );
           break;
         case `${id}-ost`:
           newBrush.x2 = clamp(
             relativePosition.x,
             brush.x1 + MIN_BRUSH_SIZE,
-            bounds.width,
+            internalExtent.x2,
           );
           break;
         case `${id}-north`:
-          newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
+          newBrush.y1 = clamp(
+            relativePosition.y,
+            internalExtent.y1,
+            brush.y2 - MIN_BRUSH_SIZE,
+          );
           break;
         case `${id}-south`:
           newBrush.y2 = clamp(
             relativePosition.y,
             brush.y1 + MIN_BRUSH_SIZE,
-            bounds.height,
+            extent.y2,
           );
           break;
         case `${id}-northwest`:
-          newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
-          newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
+          newBrush.x1 = clamp(
+            relativePosition.x,
+            internalExtent.x1,
+            brush.x2 - MIN_BRUSH_SIZE,
+          );
+          newBrush.y1 = clamp(
+            relativePosition.y,
+            internalExtent.y1,
+            brush.y2 - MIN_BRUSH_SIZE,
+          );
           break;
         case `${id}-northeast`:
           newBrush.x2 = clamp(
             relativePosition.x,
             brush.x1 + MIN_BRUSH_SIZE,
-            bounds.width,
+            extent.x2,
           );
-          newBrush.y1 = clamp(relativePosition.y, 0, brush.y2 - MIN_BRUSH_SIZE);
+          newBrush.y1 = clamp(
+            relativePosition.y,
+            internalExtent.y1,
+            brush.y2 - MIN_BRUSH_SIZE,
+          );
           break;
         case `${id}-southwest`:
-          newBrush.x1 = clamp(relativePosition.x, 0, brush.x2 - MIN_BRUSH_SIZE);
+          newBrush.x1 = clamp(
+            relativePosition.x,
+            internalExtent.x1,
+            brush.x2 - MIN_BRUSH_SIZE,
+          );
           newBrush.y2 = clamp(
             relativePosition.y,
             brush.y1 + MIN_BRUSH_SIZE,
-            bounds.height,
+            extent.y2,
           );
           break;
         case `${id}-southeast`:
           newBrush.x2 = clamp(
             relativePosition.x,
             brush.x1 + MIN_BRUSH_SIZE,
-            bounds.width,
+            extent.x2,
           );
           newBrush.y2 = clamp(
             relativePosition.y,
             brush.y1 + MIN_BRUSH_SIZE,
-            bounds.height,
+            extent.y2,
           );
           break;
         default:

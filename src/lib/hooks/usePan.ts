@@ -32,18 +32,22 @@ export function usePan(ref: RefObject<HTMLElement>, options: UsePanProps = {}) {
     onDrag: (event) => {
       setZoom((prev) => {
         let newMatrix = m4.clone(prev);
+
         if (options.direction !== "y") {
           newMatrix[12] += event.movementX;
         }
+
         if (options.direction !== "x") {
           newMatrix[13] += event.movementY;
         }
 
         if (options.constraint) {
-          return options.constraint(newMatrix);
+          newMatrix = options.constraint(newMatrix);
+        } else {
+          const bounds = ref.current.getBoundingClientRect();
+
+          newMatrix = defaultConstraint(newMatrix, bounds.width, bounds.height);
         }
-        const bounds = ref.current.getBoundingClientRect();
-        newMatrix = defaultConstraint(newMatrix, bounds.width, bounds.height);
 
         return newMatrix;
       });

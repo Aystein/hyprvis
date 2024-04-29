@@ -6,7 +6,7 @@ import { BrushRect } from "../../lib/Brush";
 import { DinoData, dinoDomainX, dinoDomainY } from "./DinoData";
 import { dinoData } from "../DinoData";
 import { useScale } from "../../lib/hooks/useScale";
-import { Brush } from "../../lib";
+import { Brush } from "../../lib/interfaces";
 
 export function BrushUsage() {
   const interactionRef = useRef();
@@ -25,23 +25,22 @@ export function BrushUsage() {
   const [selection, setSelection] = useState<number[]>();
 
   const onChangeEnd = (value: Brush) => {
-    if (!value) {
+    if (value) {
+      const newSelection = [];
+      dinoData.forEach((point, i) => {
+        if (
+          value.x1 <= xScale(point.x) &&
+          xScale(point.x) <= value.x2 &&
+          value.y1 <= yScale(point.y) &&
+          yScale(point.y) <= value.y2
+        ) {
+          newSelection.push(i);
+        }
+      });
+      setSelection(newSelection);
+    } else {
       setSelection(undefined);
-      return;
     }
-
-    const selection = [];
-    dinoData.forEach((point, i) => {
-      if (
-        value.x1 <= xScale(point.x) &&
-        xScale(point.x) <= value.x2 &&
-        value.y1 <= yScale(point.y) &&
-        yScale(point.y) <= value.y2
-      ) {
-        selection.push(i);
-      }
-    });
-    setSelection(selection);
   };
 
   const { brush, setBrush } = useBrush(interactionRef, {
@@ -49,12 +48,12 @@ export function BrushUsage() {
       setSelection(undefined);
     },
     onChangeEnd,
-    direction: "x",
+    direction: "xy",
     extent: {
-      x1: 110,
-      x2: 298,
-      y1: 110,
-      y2: 298,
+      x1: 50,
+      x2: 250,
+      y1: 50,
+      y2: 250,
     },
   });
 
@@ -66,14 +65,14 @@ export function BrushUsage() {
           <BrushRect
             parent={interactionRef}
             brush={brush}
-            direction="x"
+            direction="xy"
             onChange={setBrush}
             onChangeEnd={onChangeEnd}
             extent={{
-              x1: 110,
-              x2: 298,
-              y1: 110,
-              y2: 298,
+              x1: 50,
+              x2: 250,
+              y1: 50,
+              y2: 250,
             }}
           />
         ) : null}
