@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useId, useRef } from "react";
-import { useInteractions } from "./hooks/useInteractions";
-import { clamp } from "./util";
-import { Brush, Direction, Extent, PersistMode } from "./interfaces";
+import { useInteractions } from "../hooks/useInteractions";
+import { clamp } from "../util";
+import { Brush, Direction, Extent } from "../interfaces";
 
 const BORDER_WIDTH = 6;
 const EDGE_COLOR = "transparent";

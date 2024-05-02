@@ -18,7 +18,6 @@ export function useScale({
 }: UseScaleProps) {
   return useMemo(() => {
     if (!domain || !range) {
-      console.log("INVALID")
       return null;
     }
 

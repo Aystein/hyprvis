@@ -6,6 +6,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/my-lib.d.ts",
   "main": "./dist/my-lib.js",
   "module": "./dist/my-lib.js",
   "exports": {
