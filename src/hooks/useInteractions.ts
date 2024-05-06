@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { Extent } from "../interfaces";
+import { useEffect, useRef } from 'react';
+import { Extent } from '../interfaces';
 
 interface Vector {
   x: number;
@@ -26,6 +26,8 @@ interface ClickEvent {
 }
 
 interface UseInteractionsProps {
+  skip?: boolean;
+
   extent?: Extent;
 
   /**
@@ -61,20 +63,17 @@ interface UseInteractionsProps {
    *
    * Otherwise the window will be used as the target for mouse move events.
    */
-  moveTarget?: "window" | "overlay";
+  moveTarget?: 'window' | 'overlay';
 }
 
 /**
  * supports interactions like drag, mousemove etc with an overlay div in the dom
  */
-export function useInteractions(
-  ref: React.RefObject<HTMLElement>,
-  options: UseInteractionsProps = {},
-) {
+export function useInteractions(ref: React.RefObject<HTMLElement>, options: UseInteractionsProps = {}) {
   // Store state in ref for performance
   // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-useeffect
   const stateRef = useRef({
-    state: "idle",
+    state: 'idle',
     anchor: { x: 0, y: 0 },
     start: { x: 0, y: 0 },
     overlay: null,
@@ -104,18 +103,15 @@ export function useInteractions(
     };
 
     const handleMouseDown = (mouseDownEvent: MouseEvent) => {
-      const { x: mouseDownX, y: mouseDownY } =
-        relativeMousePosition(mouseDownEvent);
+      if (callbacksRef.current.skip) {
+        return;
+      }
+
+      const { x: mouseDownX, y: mouseDownY } = relativeMousePosition(mouseDownEvent);
 
       const { extent } = callbacksRef.current;
 
-      if (
-        extent &&
-        (mouseDownX < extent.x1 ||
-          mouseDownX > extent.x2 ||
-          mouseDownY < extent.y1 ||
-          mouseDownY > extent.y2)
-      ) {
+      if (extent && (mouseDownX < extent.x1 || mouseDownX > extent.x2 || mouseDownY < extent.y1 || mouseDownY > extent.y2)) {
         return;
       }
 
@@ -123,11 +119,11 @@ export function useInteractions(
       mouseDownEvent.preventDefault();
 
       // Add overlay div to the dom
-      if (options.moveTarget === "overlay") {
-        const overlay = document.createElement("div");
+      if (options.moveTarget === 'overlay') {
+        const overlay = document.createElement('div');
 
-        overlay.style.position = "absolute";
-        overlay.style.inset = "0";
+        overlay.style.position = 'absolute';
+        overlay.style.inset = '0';
 
         stateRef.current.overlay = overlay;
 
@@ -176,18 +172,14 @@ export function useInteractions(
         let emitEvent = false;
 
         // if distance is larger than 4px
-        if (
-          stateRef.current.state === "mouse_down" &&
-          (Math.abs(x - stateRef.current.start.x) > 4 ||
-            Math.abs(y - stateRef.current.start.y) > 4)
-        ) {
+        if (stateRef.current.state === 'mouse_down' && (Math.abs(x - stateRef.current.start.x) > 4 || Math.abs(y - stateRef.current.start.y) > 4)) {
           // First drag
-          stateRef.current.state = "drag";
+          stateRef.current.state = 'drag';
 
           stateRef.current.isFirstDrag = true;
 
           emitEvent = true;
-        } else if (stateRef.current.state === "drag") {
+        } else if (stateRef.current.state === 'drag') {
           // Dragging
           emitEvent = true;
         }
@@ -210,7 +202,7 @@ export function useInteractions(
 
       const windowMouseUp = (event: MouseEvent) => {
         // Last drag event
-        if (stateRef.current.state === "drag") {
+        if (stateRef.current.state === 'drag') {
           const { x, y } = relativeMousePosition(event);
 
           stateRef.current.isLastDrag = true;
@@ -227,7 +219,7 @@ export function useInteractions(
             clientY: event.clientY,
             target: stateRef.current.target,
           });
-        } else if (stateRef.current.state === "mouse_down") {
+        } else if (stateRef.current.state === 'mouse_down') {
           // Click
           const { x, y } = relativeMousePosition(event);
 
@@ -242,23 +234,23 @@ export function useInteractions(
           stateRef.current.overlay.remove();
           stateRef.current.overlay = null;
         }
-        stateRef.current.state = "idle";
+        stateRef.current.state = 'idle';
 
-        window.removeEventListener("mouseup", windowMouseUp);
-        window.removeEventListener("mousemove", windowMouseMove);
+        window.removeEventListener('mouseup', windowMouseUp);
+        window.removeEventListener('mousemove', windowMouseMove);
       };
 
-      window.addEventListener("mouseup", windowMouseUp);
-      window.addEventListener("mousemove", windowMouseMove);
+      window.addEventListener('mouseup', windowMouseUp);
+      window.addEventListener('mousemove', windowMouseMove);
 
       stateRef.current.start = { x: mouseDownX, y: mouseDownY };
-      stateRef.current.state = "mouse_down";
+      stateRef.current.state = 'mouse_down';
     };
 
-    element.addEventListener("mousedown", handleMouseDown);
+    element.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      element.removeEventListener("mousedown", handleMouseDown);
+      element.removeEventListener('mousedown', handleMouseDown);
     };
   }, [ref, options.moveTarget]);
 }

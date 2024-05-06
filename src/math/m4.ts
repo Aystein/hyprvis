@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Matrix4x4, Vector3 } from "./interfaces";
+import { Matrix4x4, Vector3 } from './interfaces';
 
 /**
  * A matrix in javascript notation is a 4x4 array of numbers.
@@ -62,12 +62,7 @@ export function I(out: Matrix4x4 = new Float32Array(16)): Matrix4x4 {
   return out;
 }
 
-export function setTranslation(
-  a: Matrix4x4,
-  x: number,
-  y: number,
-  z: number,
-): Matrix4x4 {
+export function setTranslation(a: Matrix4x4, x: number, y: number, z: number): Matrix4x4 {
   a[txi] = x;
   a[tyi] = y;
   a[tzi] = z;
@@ -75,12 +70,7 @@ export function setTranslation(
   return a;
 }
 
-export function setScaling(
-  a: Matrix4x4,
-  x: number,
-  y: number,
-  z: number,
-): Matrix4x4 {
+export function setScaling(a: Matrix4x4, x: number, y: number, z: number): Matrix4x4 {
   a[sxi] = x;
   a[syi] = y;
   a[szi] = z;

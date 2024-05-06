@@ -1,7 +1,7 @@
-import { ScaleLinear } from "d3-scale";
-import { ZoomExtent, ZoomTransform } from "./interfaces";
-import { clamp } from "./util";
-import { m4, v3 } from "./math";
+import { ScaleLinear } from 'd3-scale';
+import { ZoomExtent, ZoomTransform } from './interfaces';
+import { clamp } from './util';
+import { m4, v3 } from './math';
 
 export function identityZoom(): ZoomTransform {
   return m4.I();
@@ -19,10 +19,7 @@ export function invertY(transform: ZoomTransform, y: number) {
   return (y - translation[1]) / scale[1];
 }
 
-export function rescaleX(
-  transform: ZoomTransform,
-  x: ScaleLinear<number, number>,
-) {
+export function rescaleX(transform: ZoomTransform, x: ScaleLinear<number, number>) {
   const newDomain = x
     .range()
     .map((r) => invertX(transform, r))
@@ -30,10 +27,7 @@ export function rescaleX(
   return x.copy().domain(newDomain);
 }
 
-export function rescaleY(
-  transform: ZoomTransform,
-  y: ScaleLinear<number, number>,
-) {
+export function rescaleY(transform: ZoomTransform, y: ScaleLinear<number, number>) {
   const newDomain = y
     .range()
     .map((r) => invertY(transform, r))
@@ -49,21 +43,13 @@ export function translate(transform: ZoomTransform, x: number, y: number) {
   return newTransform;
 }
 
-export function defaultConstraint(
-  transform: ZoomTransform,
-  width: number,
-  height: number,
-) {
+export function defaultConstraint(transform: ZoomTransform, width: number, height: number) {
   const x0 = invertX(transform, 0);
   const x1 = invertX(transform, width) - width;
   const y0 = invertY(transform, 0);
   const y1 = invertY(transform, height) - height;
 
-  return translate(
-    transform,
-    x1 > x0 ? (x0 + x1) / 2 : Math.min(0, x0) || Math.max(0, x1),
-    y1 > y0 ? (y0 + y1) / 2 : Math.min(0, y0) || Math.max(0, y1),
-  );
+  return translate(transform, x1 > x0 ? (x0 + x1) / 2 : Math.min(0, x0) || Math.max(0, x1), y1 > y0 ? (y0 + y1) / 2 : Math.min(0, y0) || Math.max(0, y1));
 }
 
 /**
@@ -71,14 +57,7 @@ export function defaultConstraint(
  * Note that this does only apply the zoom extent if it is provided.
  * The translation extent is applied at a later stage.
  */
-export function calculateTransform(
-  zoom: ZoomTransform,
-  x: number,
-  y: number,
-  wheel: number,
-  direction: "x" | "y" | "xy",
-  zoomExtent?: ZoomExtent,
-) {
+export function calculateTransform(zoom: ZoomTransform, x: number, y: number, wheel: number, direction: 'x' | 'y' | 'xy', zoomExtent?: ZoomExtent) {
   const translation = m4.getTranslation(v3.I(), zoom);
   const scale = m4.getScaling(v3.I(), zoom);
 
@@ -103,17 +82,7 @@ export function calculateTransform(
   const newY = translation[1] + offsetY;
 
   const mtx = m4.I();
-  m4.setTranslation(
-    mtx,
-    direction !== "y" ? newX : translation[0],
-    direction !== "x" ? newY : translation[1],
-    0,
-  );
-  m4.setScaling(
-    mtx,
-    direction !== "y" ? newScaleX : scale[0],
-    direction !== "x" ? newScaleY : scale[1],
-    0,
-  );
+  m4.setTranslation(mtx, direction !== 'y' ? newX : translation[0], direction !== 'x' ? newY : translation[1], 0);
+  m4.setScaling(mtx, direction !== 'y' ? newScaleX : scale[0], direction !== 'x' ? newScaleY : scale[1], 0);
   return mtx;
 }

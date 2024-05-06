@@ -1,7 +1,7 @@
-import { useRef, RefObject, useEffect } from "react";
-import { normalizeWheelEvent } from "../normalizeWheelEvent";
-import { Extent, NormalizedWheelEvent } from "../interfaces";
-import { outsideExtent, relativeMousePosition } from "../util";
+import { useRef, RefObject, useEffect } from 'react';
+import { normalizeWheelEvent } from '../normalizeWheelEvent';
+import { Extent, NormalizedWheelEvent } from '../interfaces';
+import { outsideExtent, relativeMousePosition } from '../util';
 
 export interface UseWheelProps {
   onWheel: (event: NormalizedWheelEvent) => void;
@@ -53,10 +53,10 @@ export function useWheel(ref: RefObject<HTMLElement>, props: UseWheelProps) {
       });
     };
 
-    element.addEventListener("wheel", handler, { passive: false });
+    element.addEventListener('wheel', handler, { passive: false });
 
     return () => {
-      element.removeEventListener("wheel", handler);
+      element.removeEventListener('wheel', handler);
     };
   }, [ref]);
 }

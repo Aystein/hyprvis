@@ -1,8 +1,8 @@
-import { RefObject, useRef } from "react";
-import { useInteractions } from "./useInteractions";
-import { Brush, Direction, Extent, PersistMode } from "../interfaces";
-import { clamp } from "../util";
-import { useControlledUncontrolled } from "./useControlledUncontrolled";
+import { RefObject, useRef } from 'react';
+import { useInteractions } from './useInteractions';
+import { Brush, Direction, Extent, PersistMode } from '../interfaces';
+import { clamp } from '../util';
+import { useControlledUncontrolled } from './useControlledUncontrolled';
 
 interface UseBrushProps {
   value?: Brush;
@@ -15,10 +15,7 @@ interface UseBrushProps {
   persistMode?: PersistMode;
 }
 
-export function useBrush(
-  ref: RefObject<HTMLElement>,
-  options: UseBrushProps = {},
-) {
+export function useBrush(ref: RefObject<HTMLElement>, options: UseBrushProps = {}) {
   const [brush, setBrush] = useControlledUncontrolled({
     value: options.value,
     onChange: options.onChange,
@@ -29,7 +26,7 @@ export function useBrush(
   optionsRef.current = options;
 
   useInteractions(ref, {
-    moveTarget: "overlay",
+    moveTarget: 'overlay',
     extent: options.extent,
     onClick: optionsRef.current.onClick,
     onDrag: (event) => {
@@ -49,10 +46,10 @@ export function useBrush(
         y2: Math.max(event.anchor.y, event.end.y),
       };
 
-      if (options.direction === "x") {
+      if (options.direction === 'x') {
         newBrush.y1 = 0;
         newBrush.y2 = bounds.height;
-      } else if (options.direction === "y") {
+      } else if (options.direction === 'y') {
         newBrush.x1 = 0;
         newBrush.x2 = bounds.width;
       }
@@ -69,7 +66,7 @@ export function useBrush(
     onMouseUp: () => {
       optionsRef.current.onChangeEnd?.(brush);
 
-      if (optionsRef.current.persistMode === "clear_on_mouse_up") {
+      if (optionsRef.current.persistMode === 'clear_on_mouse_up') {
         setBrush(undefined);
       }
     },

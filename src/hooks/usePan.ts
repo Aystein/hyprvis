@@ -1,9 +1,9 @@
-import { Dispatch, RefObject } from "react";
-import { Direction, ZoomTransform } from "../interfaces";
-import { useInteractions } from "./useInteractions";
-import { useControlledUncontrolled } from "./useControlledUncontrolled";
-import { defaultConstraint } from "../transform";
-import { m4 } from "../math";
+import { Dispatch, RefObject } from 'react';
+import { Direction, ZoomTransform } from '../interfaces';
+import { useInteractions } from './useInteractions';
+import { useControlledUncontrolled } from './useControlledUncontrolled';
+import { defaultConstraint } from '../transform';
+import { m4 } from '../math';
 
 interface UsePanProps {
   value?: ZoomTransform;
@@ -19,6 +19,8 @@ interface UsePanProps {
    * Direction to pan. 'x' pans horizontally, 'y' pans vertically, 'xy' pans both.
    */
   direction?: Direction;
+
+  skip?: boolean;
 }
 
 export function usePan(ref: RefObject<HTMLElement>, options: UsePanProps = {}) {
@@ -29,14 +31,15 @@ export function usePan(ref: RefObject<HTMLElement>, options: UsePanProps = {}) {
   });
 
   useInteractions(ref, {
+    skip: options.skip,
     onDrag: (event) => {
       let newMatrix = m4.clone(zoom);
 
-      if (options.direction !== "y") {
+      if (options.direction !== 'y') {
         newMatrix[12] += event.movementX;
       }
 
-      if (options.direction !== "x") {
+      if (options.direction !== 'x') {
         newMatrix[13] += event.movementY;
       }
 

@@ -1,6 +1,6 @@
-import { Matrix4x4 } from "./math/interfaces";
+import { Matrix4x4 } from './math/interfaces';
 
-export type PersistMode = "persistent" | "clear_on_mouse_up";
+export type PersistMode = 'persistent' | 'clear_on_mouse_up';
 
 export interface NormalizedWheelEvent {
   spinX: number;
@@ -32,6 +32,6 @@ export interface Position {
   y: number;
 }
 
-export type Direction = "x" | "y" | "xy";
+export type Direction = 'x' | 'y' | 'xy';
 
 export type ZoomTransform = Matrix4x4;

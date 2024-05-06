@@ -1,9 +1,9 @@
-import { RefObject } from "react";
-import { useWheel } from "./useWheel";
-import { calculateTransform, defaultConstraint } from "../transform";
-import { useControlledUncontrolled } from "./useControlledUncontrolled";
-import { Direction, Extent, ZoomExtent, ZoomTransform } from "../interfaces";
-import { m4 } from "../math";
+import { RefObject } from 'react';
+import { useWheel } from './useWheel';
+import { calculateTransform, defaultConstraint } from '../transform';
+import { useControlledUncontrolled } from './useControlledUncontrolled';
+import { Direction, Extent, ZoomExtent, ZoomTransform } from '../interfaces';
+import { m4 } from '../math';
 
 interface UseZoomProps {
   value?: ZoomTransform;
@@ -43,10 +43,7 @@ interface UseZoomProps {
  * In uncontrolled mode you can provide a defaultValue and the hook
  * will return the current value and a setter.
  */
-export function useZoom(
-  ref: RefObject<HTMLElement>,
-  options: UseZoomProps = {},
-) {
+export function useZoom(ref: RefObject<HTMLElement>, options: UseZoomProps = {}) {
   const [internalValue, setInternalValue] = useControlledUncontrolled({
     value: options.value,
     defaultValue: options.defaultValue || m4.I(),

@@ -1,4 +1,4 @@
-import { NormalizedWheelEvent } from "./interfaces";
+import { NormalizedWheelEvent } from './interfaces';
 
 const DOM_DELTA_PIXEL = 0x00;
 const DOM_DELTA_LINE = 0x01;

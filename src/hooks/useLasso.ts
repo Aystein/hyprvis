@@ -1,8 +1,8 @@
-import { RefObject, useRef } from "react";
-import { produce } from "immer";
-import { useInteractions } from "./useInteractions";
-import { clamp } from "../util";
-import { useControlledUncontrolled } from "./useControlledUncontrolled";
+import { RefObject, useRef } from 'react';
+import { produce } from 'immer';
+import { useInteractions } from './useInteractions';
+import { clamp } from '../util';
+import { useControlledUncontrolled } from './useControlledUncontrolled';
 
 export type LassoValue = { x: number; y: number }[];
 
@@ -20,7 +20,7 @@ export function lassoToSvgPath(lasso: { x: number; y: number }[]) {
       }
       return `L ${point.x} ${point.y}`;
     })
-    .join(" ");
+    .join(' ');
 }
 
 export interface LassoProps {
@@ -28,22 +28,17 @@ export interface LassoProps {
   onChange?: (points: LassoValue) => void;
   onChangeEnd?: (points: LassoValue) => void;
   minDistanceToCreatePoint?: number;
+  skip?: boolean;
 }
 
-export function checkForInclusion(
-  lasso: LassoValue,
-  point: { x: number; y: number },
-) {
+export function checkForInclusion(lasso: LassoValue, point: { x: number; y: number }) {
   let numberOfIntersections = 0;
 
   for (let i = 0, j = lasso.length - 1; i < lasso.length; j = i++) {
     const { x: prevX, y: prevY } = lasso[j];
     const { x, y } = lasso[i];
 
-    if (
-      y > point.y !== prevY > point.y &&
-      point.x < ((prevX - x) * (point.y - y)) / (prevY - y) + x
-    ) {
+    if (y > point.y !== prevY > point.y && point.x < ((prevX - x) * (point.y - y)) / (prevY - y) + x) {
       numberOfIntersections++;
     }
   }
@@ -51,10 +46,7 @@ export function checkForInclusion(
   return numberOfIntersections % 2 !== 0;
 }
 
-export function useLasso(
-  ref: RefObject<HTMLElement>,
-  options: LassoProps = {},
-) {
+export function useLasso(ref: RefObject<HTMLElement>, options: LassoProps = {}) {
   const lastXY = useRef<{ x: number; y: number }>();
 
   const { value, onChange } = options;
@@ -68,6 +60,7 @@ export function useLasso(
   callbacksRef.current = options;
 
   useInteractions(ref, {
+    skip: options.skip,
     onDrag: (event) => {
       const bounds = ref.current.getBoundingClientRect();
 
@@ -76,11 +69,7 @@ export function useLasso(
         setInternalValue(newLasso);
         lastXY.current = event.end;
         callbacksRef.current.onChange?.(newLasso);
-      } else if (
-        Math.abs(event.end.x - lastXY.current.x) +
-          Math.abs(event.end.y - lastXY.current.y) >
-        (options.minDistanceToCreatePoint ?? 6)
-      ) {
+      } else if (Math.abs(event.end.x - lastXY.current.x) + Math.abs(event.end.y - lastXY.current.y) > (options.minDistanceToCreatePoint ?? 6)) {
         const newPoint = {
           x: clamp(event.end.x, 1, bounds.width - 1),
           y: clamp(event.end.y, 1, bounds.height - 1),

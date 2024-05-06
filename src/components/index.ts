@@ -1,2 +1,2 @@
-export * from "./Brush";
-export * from "./Brushable";
+export * from './Brush';
+export * from './Brushable';
