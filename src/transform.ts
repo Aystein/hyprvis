@@ -1,5 +1,5 @@
 import { ScaleLinear } from 'd3-scale';
-import { ZoomExtent, ZoomTransform } from './interfaces';
+import { Extent, ZoomExtent, ZoomTransform } from './interfaces';
 import { clamp } from './util';
 import { m4, v3 } from './math';
 
@@ -43,12 +43,15 @@ export function translate(transform: ZoomTransform, x: number, y: number) {
   return newTransform;
 }
 
-export function defaultConstraint(transform: ZoomTransform, width: number, height: number) {
-  const x0 = invertX(transform, 0);
-  const x1 = invertX(transform, width) - width;
-  const y0 = invertY(transform, 0);
-  const y1 = invertY(transform, height) - height;
-
+export function defaultConstraint(transform: ZoomTransform, extent: Extent) {
+  const x0 = invertX(transform, extent.x1) - extent.x1;
+  const x1 = invertX(transform, extent.x2) - extent.x2;
+  const y0 = invertY(transform, extent.y1) - extent.y1;
+  const y1 = invertY(transform, extent.y2) - extent.y2;
+  // console.log(extent);
+  // console.log(x0, x1, y0, y1);
+  // const newTransform = translate(transform, x1 > x0 ? (x0 + x1) / 2 : Math.min(0, x0) || Math.max(0, x1), y1 > y0 ? (y0 + y1) / 2 : Math.min(0, y0) || Math.max(0, y1));
+  // console.log(newTransform[txi]);
   return translate(transform, x1 > x0 ? (x0 + x1) / 2 : Math.min(0, x0) || Math.max(0, x1), y1 > y0 ? (y0 + y1) / 2 : Math.min(0, y0) || Math.max(0, y1));
 }
 

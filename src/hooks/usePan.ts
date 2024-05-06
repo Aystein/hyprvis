@@ -1,5 +1,5 @@
 import { Dispatch, RefObject } from 'react';
-import { Direction, ZoomTransform } from '../interfaces';
+import { Direction, Extent, ZoomTransform } from '../interfaces';
 import { useInteractions } from './useInteractions';
 import { useControlledUncontrolled } from './useControlledUncontrolled';
 import { defaultConstraint } from '../transform';
@@ -14,6 +14,11 @@ interface UsePanProps {
    * Constrain the zoom transform.
    */
   constraint?: (transform: ZoomTransform) => ZoomTransform;
+
+  /**
+   * Extent to constrain the zoom transform within the bounds of the extent.
+   */
+  extent?: Extent;
 
   /**
    * Direction to pan. 'x' pans horizontally, 'y' pans vertically, 'xy' pans both.
@@ -48,7 +53,14 @@ export function usePan(ref: RefObject<HTMLElement>, options: UsePanProps = {}) {
       } else {
         const bounds = ref.current.getBoundingClientRect();
 
-        newMatrix = defaultConstraint(newMatrix, bounds.width, bounds.height);
+        const realExtent = options.extent || {
+          x1: 0,
+          y1: 0,
+          x2: bounds.width,
+          y2: bounds.height,
+        };
+
+        newMatrix = defaultConstraint(newMatrix, realExtent);
       }
 
       setZoom(newMatrix);

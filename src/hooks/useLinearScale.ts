@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
-import { scaleLinear } from 'd3-scale';
-import { rescaleX, rescaleY } from '../transform';
+import { useMemo } from "react";
+import { scaleLinear } from "d3-scale";
 
 interface UseLinearScaleProps {
   domain: number[];

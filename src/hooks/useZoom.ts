@@ -29,11 +29,6 @@ interface UseZoomProps {
    * Zoom extent to constrain the zoom transform within the bounds of the extent.
    */
   zoomExtent?: ZoomExtent;
-
-  /**
-   * The transform origin.
-   */
-  transformOrigin?: [number, number];
 }
 
 /**
@@ -55,8 +50,8 @@ export function useZoom(ref: RefObject<HTMLElement>, options: UseZoomProps = {})
     onWheel: (event) => {
       let newZoom = calculateTransform(
         internalValue,
-        event.x - (options.transformOrigin ? options.transformOrigin[0] : 0),
-        event.y - (options.transformOrigin ? options.transformOrigin[1] : 0),
+        event.x,
+        event.y,
         -event.spinY,
         options.direction,
         options.zoomExtent,
@@ -67,7 +62,14 @@ export function useZoom(ref: RefObject<HTMLElement>, options: UseZoomProps = {})
       } else {
         const bounds = ref.current.getBoundingClientRect();
 
-        newZoom = defaultConstraint(newZoom, bounds.width, bounds.height);
+        const realExtent = options.extent || {
+          x1: 0,
+          y1: 0,
+          x2: bounds.width,
+          y2: bounds.height,
+        };
+
+        newZoom = defaultConstraint(newZoom, realExtent);
       }
 
       setInternalValue(newZoom);
